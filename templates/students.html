@@ -11,7 +11,7 @@
                 {% for key, value in stats.items %}
                     {% if key == student %}
                     {% for test in value %}
-                        <li><a href="/statistics/test/{{ test.id }}/">{{ test.testDate }}
+                        <li  {% if test.final %}class="finaltest" {% endif %}><a href="/statistics/test/{{ test.id }}/">{{ test.testDate }}
                             {% if test.total > test.correct  %}
                                 : <span style="font-weight: bold;">Правильных ответов - {{ test.correct }}</span></a>
                             {% else %}

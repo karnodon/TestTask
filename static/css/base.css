@@ -28,3 +28,8 @@ a.task {
     background-clip: border-box; -moz-background-clip: border; -webkit-background-clip: border-box;
     background-origin: border-box; -moz-background-origin: border; -webkit-background-origin: border-box;
 }
+
+.finaltest {
+    font-size:larger;
+    font-style:italic;
+}
