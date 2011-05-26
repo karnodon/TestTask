@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block main %}
+    {{ currentuser }}
+    <table>
+        <tr><th>Учащийся</th><th>Дата</th><th colspan="{{ stats.values.0.0.1|length }}">Задания</th><th align="center">Балл</th></tr>
+        {% for chap, st in stats.items %}
+            {% for stat in st %}
+                {% if forloop.first %}
+                    <tr><td colspan="2"></td>
+                        {% for item in stat.1 %}
+                            <th>{{ forloop.counter }}</th>
+                        {% endfor %}<td></td></tr>
+                {% endif %}
+                <tr>
+                    <td>{{ stat.0.student }}</td><td>{{ stat.0.testDate }}</td>
+                    {% for item in stat.1 %}
+                        <td>
+                            {% if item %}
+                                +
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                    <td align="center">{{ stat.0.correct }}</td>
+                </tr>
+            {% endfor %}
+        {%  endfor %}
+    </table>
+    <a href="/statistics/tests/pdf">Загрузить в PDF</a>
+{% endblock %}

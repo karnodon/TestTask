@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+    {% block title %}{% if teacherMode %}Результаты{% else %}Конец{% endif %} {% endblock %}
+{% block main %}
+    {% if teacherMode %}
+        <p>Результаты тестирования {{ session.student }} по разделу "{{ chapter }}"</p>
+    {% else %}
+        <p>Тестирование по разделу {{ chapter }} завершено!</p>
+    {% endif %}
+    <p>
+        {% if teacherMode %}
+            {{ session.student }} ответил 
+        {% else %}
+            Вы ответили
+        {% endif %} правильно на {{ session.correct }} из {{ session.total }} вопросов за {{ time }}
+    </p>
+    {% if answers %}
+        <table>
+            {% for answer in answers %}
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td {% if answer.actual|length > 0 %}
+                                    style="color:red"
+                                {% endif %} >Задача: {{ answer.task }}</td>
+                            </tr>
+                            <tr>
+                                <td>Правильно
+                                    <ul>
+                                    {% for item in answer.correct %}
+                                        <li>{{ item }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% if answer.actual|length > 0 %}
+                            <tr>
+                                <td>Неправильно
+                                    <ul>
+                                    {% for item in answer.actual %}
+                                        <li style="color:red;">{{ item }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    <a href="/chapter/">Вернуться на список разделов</a>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block main%}
+    <form action="" method="post" style="margin-left:10px;">{% csrf_token %}
+        <div>
+            <label for="username">Имя пользователя:</label>
+        </div>
+        <div>
+            <input type accept="text" name="username" value="" id="username" size="30">
+        </div>
+        <div>
+            <label for="password">Пароль:</label>
+        </div>
+        <div>
+            <input type = "password" accept="text" name="password" value="" id="password" size="30">
+        </div>
+        <div style="margin-top:10px;"><input type="submit" value="Войти"></div>
+    </form>
+{% endblock %}

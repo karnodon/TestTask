@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+    {% block title %}{{ task.chapter.shortName }} {% if task.final %}ЗАЧЕТ {% endif %} {% endblock %}
+{% block header %}
+    {{ block.super }}
+    {% for item in list %}
+        <a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
+            {% if task == item %}
+                <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
+            {% else %}
+                {{ item.position }}
+            {% endif %}
+        </a>|
+    {% endfor %}
+    <h2>{{ task.title }}</h2>
+    <hr>
+{% endblock %}
+{% block main %}
+    <p>{{ task.description|safe }}</p>
+    <p>Варианты ответов</p>
+    <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ task.id }}/answer/">
+        {% for item in options_list %}
+            <label title="{{item}}">
+                {% if type == -1 %}
+                    <input type="text" value="" name="option"/>
+                    {% else %}
+                    {% if type == 1 %}
+                        <input type="radio" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
+                    {% else %}
+                        <input type="checkbox" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
+                    {% endif %}
+                {% endif %}
+            </label><br/>
+        {% endfor %}
+        {% if task.position == list|length %}
+            <input type="submit" value="Закончить">
+        {% else %}
+            <input type="submit" value="Следующий">
+        {% endif %}
+    </form>
+{% endblock %}
