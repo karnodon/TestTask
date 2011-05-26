@@ -6,7 +6,7 @@
         {% for chap, st in stats.items %}
             {% for stat in st %}
                 {% if forloop.first %}
-                    <tr><td colspan="2"></td>
+                    <tr><td colspan="2">{{ chap }}</td>
                         {% for item in stat.1 %}
                             <th>{{ forloop.counter }}</th>
                         {% endfor %}<td></td></tr>
