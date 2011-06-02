@@ -141,7 +141,6 @@ def get_test_session(testSession):
         testSession.save()
     return aggregate
 
-
 @login_required
 def end(request, chapterId):
     chapter = Chapter.objects.get(id = chapterId)
