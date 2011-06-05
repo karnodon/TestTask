@@ -4,11 +4,25 @@
 a {
     color: #205986;
 }
-
+h1 {
+    text-align:center;
+    color:#00ffff;
+    background-image:url("/static/images/bg_header.png");
+    background-repeat:repeat-x;
+    height:40px;
+}
 a.task {
-    color: #205986;
+    color: #00FFFF;
     text-decoration:none;
     font-weight: bold;
+    text-align:center;
+}
+td.task {
+    width:40px;
+    height:40px;
+    background-image:url("/static/images/bg_task.png");
+    margin:5px;
+    text-align:center;
 }
 .highlight {
     font-weight:bold;
@@ -32,4 +46,11 @@ a.task {
 .finaltest {
     font-size:larger;
     font-style:italic;
+}
+
+.button {
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    cursor:pointer;
 }

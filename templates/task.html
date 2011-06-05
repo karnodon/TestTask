@@ -2,15 +2,17 @@
     {% block title %}{{ task.chapter.shortName }} {% if task.final %}ЗАЧЕТ {% endif %} {% endblock %}
 {% block header %}
     {{ block.super }}
-    {% for item in list %}
-        <a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
-            {% if task == item %}
-                <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
-            {% else %}
-                {{ item.position }}
-            {% endif %}
-        </a>|
-    {% endfor %}
+    <table align="center"><tr>
+        {% for item in list %}
+            <td align="center" class="task button"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
+                {% if task == item %}
+                    <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
+                {% else %}
+                    {{ item.position }}
+                {% endif %}
+            </a></td>
+        {% endfor %}
+    </tr></table>
     <h2>{{ task.title }}</h2>
     <hr>
 {% endblock %}

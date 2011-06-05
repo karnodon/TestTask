@@ -37,7 +37,7 @@ def chapters(request, chapterId=None, final = False):
                         return test_detail(request, final_test.id)
             except TestSession.DoesNotExist:
                 pass
-        firstTask = Task.objects.filter(chapter = chapterId)[0]
+        firstTask = Task.objects.get(chapter = chapterId, position = 1)
         return task(request, firstTask.id)
     else:
         chapterList = Chapter.objects.filter(active = True)
@@ -46,6 +46,9 @@ def chapters(request, chapterId=None, final = False):
                                   context_instance=RequestContext(request))
 @login_required
 def task(request, taskId):
+    isTeacher =  bool(request.user.groups.filter(name='teacher'))
+    if isTeacher:
+        return redirect("/chapter/")
     task = Task.objects.get(id = taskId)
     type = 0
     options = task.option_set.all()
@@ -110,12 +113,12 @@ def add_answer(request, taskId):
 def get_test_session(testSession):
     answers = testSession.answer_set.order_by('position')
     aggregate = []
-    incorrect = 0
     for a in answers:
         opts = a.selected.all()
         task = opts[0].task
         correctTexts = []
         actualTexts = []
+        testSession.correct = 0
         taskOpts = task.option_set.filter(correct=True)
         for opt in taskOpts:
             if opt.correct:
@@ -125,18 +128,15 @@ def get_test_session(testSession):
                     correctTexts.append(opt.value)
         if a.value is not None and opts[0].value != a.value:
             actualTexts.append(a.value)
-            incorrect += 1
         if opts.count() == 1 and not opts[0].correct:
             actualTexts.append(opts[0].text)
-            incorrect += 1
         elif len(correctTexts) > 1 and set(opts).intersection(taskOpts) != set(taskOpts):
-            incorrect += 1
-            actualTexts = []
             for o in opts:
                 actualTexts.append(o.text)
+        else:
+            testSession.correct += 1
         aggregate.append(Summary(taskText=task.title,
                                  correctText=correctTexts, actualText=actualTexts))
-        testSession.correct = len(aggregate) - incorrect
         testSession.total = len(aggregate)
         testSession.save()
     return aggregate
@@ -165,7 +165,8 @@ def test_detail(request, testId):
     testSession = TestSession.objects.get(id = testId)
     chapter = Chapter.objects.get(id = testSession.answer_set.all()[0].selected.all()[0].task.chapter_id)
     aggregate = get_test_session(testSession)
-    return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacherMode': True,
+    return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession,
+                                           'teacherMode': request.user != testSession.student,
                                            'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
                                            'answers' : aggregate}, context_instance=RequestContext(request))
 
