@@ -21,6 +21,15 @@ class Summary:
         self.task = taskText
         self.correct = correctText
         self.actual = actualText
+
+
+def chapter_id_for_test_session(test_session):
+    try:
+        return test_session.answer_set.all()[0].selected.all()[0].task.chapter_id
+    except Exception:
+        return -1
+
+
 @login_required
 def chapters(request, chapterId=None, final = False):
     if chapterId:
@@ -33,7 +42,7 @@ def chapters(request, chapterId=None, final = False):
             try:
                 final_tests = TestSession.objects.filter(student = request.user, final = True)
                 for final_test in final_tests:
-                    if final_test.answer_set.all()[0].selected.all()[0].task.chapter_id == int(chapterId):
+                    if chapter_id_for_test_session(final_test) == int(chapterId):
                         return test_detail(request, final_test.id)
             except TestSession.DoesNotExist:
                 pass
@@ -110,25 +119,24 @@ def add_answer(request, taskId):
     return redirect('/chapter/%d/task/%d/'%(task.chapter_id,nextTaskId), context_instance=RequestContext(request))
 
 
-def get_test_session(testSession):
+def get_test_session_data(testSession):
     answers = testSession.answer_set.order_by('position')
     aggregate = []
+    testSession.correct = 0
     for a in answers:
         opts = a.selected.all()
         task = opts[0].task
         correctTexts = []
         actualTexts = []
-        testSession.correct = 0
         taskOpts = task.option_set.filter(correct=True)
         for opt in taskOpts:
-            if opt.correct:
-                if opt.value is None or opt.value == '':
-                    correctTexts.append(opt.text)
-                else:
-                    correctTexts.append(opt.value)
+            if opt.value is None or opt.value == '':
+                correctTexts.append(opt.text)
+            else:
+                correctTexts.append(opt.value)
         if a.value is not None and opts[0].value != a.value:
             actualTexts.append(a.value)
-        if opts.count() == 1 and not opts[0].correct:
+        elif opts.count() == 1 and not opts[0].correct:
             actualTexts.append(opts[0].text)
         elif len(correctTexts) > 1 and set(opts).intersection(taskOpts) != set(taskOpts):
             for o in opts:
@@ -137,8 +145,8 @@ def get_test_session(testSession):
             testSession.correct += 1
         aggregate.append(Summary(taskText=task.title,
                                  correctText=correctTexts, actualText=actualTexts))
-        testSession.total = len(aggregate)
-        testSession.save()
+    testSession.total = len(aggregate)
+    testSession.save()
     return aggregate
 
 @login_required
@@ -147,11 +155,10 @@ def end(request, chapterId):
     try:
         testSession = request.session['test']
         testSession.duration = (datetime.now() - testSession.testDate).seconds
-        testSession.save()
-        aggregate = get_test_session(testSession)
+        aggregate = get_test_session_data(testSession)
         if settings.SEND_EMAIL:
             send_mail(u"Тестирование завершено", testSession.student.username + u' завершил тестирование по теме ' + chapter.shortName,
-                      'frostbeast@mail.ru', [User.objects.get(username='teacher').email], fail_silently=False)
+                      'frostbeast@mail.ru', [User.objects.get(username='teacher').email])
         del request.session['test']
         return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacherMode': False,
                                            'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
@@ -163,8 +170,8 @@ def end(request, chapterId):
 @login_required
 def test_detail(request, testId):
     testSession = TestSession.objects.get(id = testId)
-    chapter = Chapter.objects.get(id = testSession.answer_set.all()[0].selected.all()[0].task.chapter_id)
-    aggregate = get_test_session(testSession)
+    chapter = Chapter.objects.get(id = chapter_id_for_test_session(testSession))
+    aggregate = get_test_session_data(testSession)
     return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession,
                                            'teacherMode': request.user != testSession.student,
                                            'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
@@ -196,8 +203,8 @@ def tests(request):
                 forChapter = []
                 stats[chapter] = forChapter
             for ft in finalTests:
-                if ft.answer_set.all()[0].selected.all()[0].task.chapter_id == chapter.id:
-                    testAggregate = get_test_session(ft)
+                if chapter_id_for_test_session(ft) == chapter.id:
+                    testAggregate = get_test_session_data(ft)
                     taskResults = []
                     for ta in testAggregate:
                         taskResults.append(len(ta.actual) == 0)
@@ -224,8 +231,8 @@ def tests_to_pdf(request, chapterId = None):
     p.drawString(40, 820, u"Учащийся")
     finalTests = TestSession.objects.filter(final = True)
     for ft in finalTests:
-        if ft.answer_set.all()[0].selected.all()[0].task.chapter_id == chapterId:
-            testAggregate = get_test_session(ft)
+        if chapter_id_for_test_session(ft) == chapterId:
+            testAggregate = get_test_session_data(ft)
             p.drawString(40, 800 - line * k, ft.student.username)
             i = 0
             for ta in testAggregate:
@@ -281,7 +288,7 @@ def draw_chart(request, chapterId = None, studentId = None):
         d.chart.categoryAxis.categoryNames = []
         tests = TestSession.objects.filter(final = False, student = std).order_by('testDate')
         for ft in tests:
-            if ft.answer_set.all()[0].selected.all()[0].task.chapter_id == int(chapterId):
+            if chapter_id_for_test_session(ft) == int(chapterId):
                 stats.append(ft.correct)
                 d.chart.categoryAxis.categoryNames.append(str(ft.testDate))
         #d.title.text = unicode(Chapter.objects.get(id = chapterId))
