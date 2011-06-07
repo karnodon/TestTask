@@ -2,11 +2,11 @@
     background-image:url("/static/images/back_cell.jpg");
 }
 a {
-    color: #205986;
+    color: #3869FF;
 }
 h1 {
     text-align:center;
-    color:#00ffff;
+    color:#3869FF;
     background-image:url("/static/images/bg_header.png");
     background-repeat:repeat-x;
     height:40px;
@@ -26,7 +26,7 @@ td.task {
 }
 .highlight {
     font-weight:bold;
-    color:blue;
+    color:#3869FF;
 }
 
 .gradient {
