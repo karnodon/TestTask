@@ -18,14 +18,14 @@
             {% for answer in answers %}
                 <tr>
                     <td>
-                        <table style="background: #7CA0C7" width="100%">
+                        <table style="border-width: 1px; border-style: solid; border-radius: 8px;" width="800">
                             <tr>
-                                <td {% if answer.actual|length > 0 %}
-                                    style="color:red"
+                                <td style="background-color: #faebd7;" {% if answer.actual|length > 0 %}
+                                    class="error"
                                 {% endif %} >Задача: {{ answer.task }}</td>
                             </tr>
                             <tr>
-                                <td>Правильно
+                                <td style="background-color: #adff2f;">Правильно
                                     <ul>
                                     {% for item in answer.correct %}
                                         <li>{{ item }}</li>
@@ -35,10 +35,10 @@
                             </tr>
                             {% if answer.actual|length > 0 %}
                             <tr>
-                                <td>Неправильно
+                                <td class="error" style="background-color: #e9967a;">Неправильно
                                     <ul>
                                     {% for item in answer.actual %}
-                                        <li style="color:red;">{{ item }}</li>
+                                        <li>{{ item }}</li>
                                     {% endfor %}
                                     </ul>
                                 </td>

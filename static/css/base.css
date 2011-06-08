@@ -11,6 +11,9 @@ h1 {
     background-repeat:repeat-x;
     height:40px;
 }
+table {
+    padding: 0;
+}
 a.task {
     color: #00FFFF;
     text-decoration:none;
@@ -53,4 +56,8 @@ td.task {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     cursor:pointer;
+}
+
+.error {
+    color: red;
 }
