@@ -14,6 +14,9 @@ h1 {
 table {
     padding: 0;
 }
+th {
+    background: inherit;
+}
 a.task {
     color: #00FFFF;
     text-decoration:none;
@@ -60,4 +63,7 @@ td.task {
 
 .error {
     color: red;
+}
+.copyright {
+    font-size: small;
 }

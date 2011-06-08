@@ -2,14 +2,14 @@
 {% block main %}
     {{ currentuser }}
     <table>
-        <tr class="gradient"><th class="gradient">Учащийся</th><th class="gradient">Дата</th><th class="gradient" colspan="{{ stats.values.0.0.1|length }}">Задания</th><th class="gradient" align="center">Балл</th></tr>
+        <tr class="gradient"><th>Учащийся</th><th>Дата</th><th colspan="{{ stats.values.0.0.1|length }}">Задания</th><th align="center" rowspan="2">Балл</th></tr>
         {% for chap, st in stats.items %}
             {% for stat in st %}
                 {% if forloop.first %}
                     <tr class="gradient"><th colspan="2">{{ chap }}</th>
                         {% for item in stat.1 %}
-                            <th class="gradient">{{ forloop.counter }}</th>
-                        {% endfor %}<th class="gradient"></th></tr>
+                            <th>{{ forloop.counter }}</th>
+                        {% endfor %}</tr>
                 {% endif %}
                 <tr {% if forloop.counter|divisibleby:"2"  %} style="background-color: #00FFFF;" {% endif %}>
                     <td>{{ stat.0.student }}</td><td>{{ stat.0.testDate|date:"d/m/Y" }}</td>
