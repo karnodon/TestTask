@@ -21,11 +21,11 @@
                         <table style="border-width: 1px; border-style: solid; border-radius: 8px;" width="800">
                             <tr>
                                 <td style="background-color: #faebd7;" {% if answer.actual|length > 0 %}
-                                    class="error"
-                                {% endif %} >Задача: {{ answer.task }}</td>
+                                    
+                                {% endif %} >{% if answer.actual|length == 0 %}<img align="middle" height="32" width="32" src="/static/images/checkmark.png">{% else %}<img align="middle" height="32" width="32" src="/static/images/error.png">{% endif %}Задача: {{ answer.task }}</td>
                             </tr>
                             <tr>
-                                <td style="background-color: #adff2f;">Правильно
+                                <td style="background-color: #34E294;">Правильно
                                     <ul>
                                     {% for item in answer.correct %}
                                         <li>{{ item }}</li>
@@ -35,7 +35,7 @@
                             </tr>
                             {% if answer.actual|length > 0 %}
                             <tr>
-                                <td class="error" style="background-color: #e9967a;">Неправильно
+                                <td style="background-color: #FF9E6D;">Неправильно
                                     <ul>
                                     {% for item in answer.actual %}
                                         <li>{{ item }}</li>
