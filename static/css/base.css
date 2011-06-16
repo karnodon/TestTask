@@ -103,3 +103,18 @@ div.first {
 .headerText {
     color: #3869FF;
 }
+
+ul.student {
+    list-style-image: url("/static/images/student_icon.png");
+}
+ul.test {
+    list-style-image: none;
+}
+
+li.testCorrect {
+    list-style: disc;
+}
+
+li.testIncorrect {
+    list-style: circle;
+}

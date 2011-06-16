@@ -2,6 +2,7 @@
 # coding=cp1251
 from cStringIO import StringIO
 from datetime import datetime
+import logging
 import time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
@@ -15,7 +16,9 @@ from reportlab.pdfgen import canvas
 
 from Test.models import Chapter, Task, Option, TestSession
 import settings
-
+l = logging.getLogger('django.db.backends')
+l.setLevel(logging.DEBUG)
+l.addHandler(logging.StreamHandler())
 class Summary:
     def __init__(self, taskText, correctText, actualText):
         self.task = taskText
@@ -72,52 +75,54 @@ def task(request, taskId):
                                             'list' : taskList},context_instance=RequestContext(request))
 @login_required
 def add_answer(request, taskId):
-    task = Task.objects.get(id = taskId)#current task
-    if request.method == 'POST':
-        try:
-            testSession = request.session['test']
-        except KeyError :
-            testSession = None
-        if task.position == 1 and testSession is None:
+    try:
+        task = Task.objects.get(id = taskId)#current task
+        if request.method == 'POST':
             try:
-                final = request.session['final']
-            except KeyError:
-                final = False
-            testSession = TestSession()
-            testSession.testDate = datetime.now()
-            testSession.duration = 0
-            testSession.student = request.user
-            testSession.final = final
-            testSession.save()
-            request.session['test'] = testSession
-        chosen = request.POST.getlist('option')
-        answers = testSession.answer_set.all()
-        answer  = None
-        for ans in answers:
-            if ans.selected.all()[0].task == task:
-                answer = ans
-        if answer is None:
-            answer = testSession.answer_set.create()
-        else:
-            answer.selected.clear()
-        for optId in chosen:
-            try:
-                opt = Option.objects.get(id = int(optId))
-                if opt.task != task or (opt.task == task and opt.value != '' and opt.value is not None):#a chance that entered value is ID of another option
-                    raise ValueError
-            except (Option.DoesNotExist, ValueError):
-                answer.value = optId
+                testSession = request.session['test']
+            except KeyError :
+                testSession = None
+            if task.position == 1 and testSession is None:
+                try:
+                    final = request.session['final']
+                except KeyError:
+                    final = False
+                testSession = TestSession()
+                testSession.testDate = datetime.now()
+                testSession.duration = 0
+                testSession.student = request.user
+                testSession.final = final
+                testSession.save()
+                request.session['test'] = testSession
+            chosen = request.POST.getlist('option')
+            answers = testSession.answer_set.all()
+            answer  = None
+            for ans in answers:
+                if ans.selected.all()[0].task == task:
+                    answer = ans
+            if answer is None:
+                answer = testSession.answer_set.create()
+            else:
+                answer.selected.clear()
+            for optId in chosen:
+                try:
+                    opt = Option.objects.get(id = int(optId))
+                    if opt.task != task or (opt.task == task and opt.value != '' and opt.value is not None):#a chance that entered value is ID of another option
+                        raise ValueError
+                except (Option.DoesNotExist, ValueError):
+                    answer.value = optId
                 opt = task.option_set.all()[0]#value from form is not ID but entered data
-            if opt.value is not None:
-                answer.selected.add(opt)
-        answer.position = task.position
-        answer.save()
-    nextTask = Task.objects.filter(chapter = task.chapter, position = task.position + 1)
-    nextTaskId = 0
-    if nextTask.count() > 0:
-        nextTaskId = nextTask[0].id
-    return redirect('/chapter/%d/task/%d/'%(task.chapter_id,nextTaskId), context_instance=RequestContext(request))
-
+                if opt.value is not None:
+                    answer.selected.add(opt)
+            answer.position = task.position
+            answer.save()
+        nextTask = Task.objects.filter(chapter = task.chapter, position = task.position + 1)
+        nextTaskId = 0
+        if nextTask.count() > 0:
+            nextTaskId = nextTask[0].id
+        return redirect('/chapter/%d/task/%d/'%(task.chapter_id,nextTaskId), context_instance=RequestContext(request))
+    except Task.DoesNotExist:
+        return redirect("/chapter/")
 
 def get_test_session_data(testSession):
     answers = testSession.answer_set.order_by('position')
@@ -163,19 +168,22 @@ def end(request, chapterId):
         return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacherMode': False,
                                            'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
                                            'answers' : aggregate}, context_instance=RequestContext(request))
-    except KeyError :
+    except (KeyError, Chapter.DoesNotExist):
         return redirect("/chapter/")
 
 
 @login_required
 def test_detail(request, testId):
-    testSession = TestSession.objects.get(id = testId)
-    chapter = Chapter.objects.get(id = chapter_id_for_test_session(testSession))
-    aggregate = get_test_session_data(testSession)
-    return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession,
-                                           'teacherMode': request.user != testSession.student,
-                                           'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
-                                           'answers' : aggregate}, context_instance=RequestContext(request))
+    try:
+        testSession = TestSession.objects.get(id = testId)
+        chapter = Chapter.objects.get(id = chapter_id_for_test_session(testSession))
+        aggregate = get_test_session_data(testSession)
+        return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession,
+                                               'teacherMode': request.user != testSession.student,
+                                               'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
+                                               'answers' : aggregate}, context_instance=RequestContext(request))
+    except TestSession.DoesNotExist:
+        return redirect("/chapter/")
 
 @login_required
 def students(request):
@@ -256,7 +264,7 @@ def test_chart(request, chapterId = None, studentId = None):
             'student' : std,
             'chapter' : Chapter.objects.get(id = chapterId)},
                                   context_instance=RequestContext(request))
-    except ValueError:
+    except (ValueError, User.DoesNotExist, Chapter.DoesNotExist):
         return redirect("/chapter/")
 
 def draw_chart(request, chapterId = None, studentId = None):
