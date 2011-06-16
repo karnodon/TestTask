@@ -3,7 +3,6 @@
 <html>
 <head>
     <link type="text/css"  href="/static/css/base.css" rel="stylesheet"/>
-    <link href="/static/css/csschart.css" rel="stylesheet" type="text/css" media="screen" />
     <title>{% block title %}Тестирование{% endblock %}</title>
 </head>
 <body>
@@ -11,9 +10,9 @@
     <tr>
         <td>
             {% block header %}
-                <H1>Тестирование по математике</H1>
+                <H1><img src="/static/images/logo.jpg" alt="ГОУ 1748 ЦО Вертикаль" align="middle" height="40">Тестирование по математике</H1>
                 {% if user.is_authenticated %}
-                    <table width="100%" class="gradient"><td align="left"><a href="/chapter/">Главная</a></td><td align="right">Пользователь: <span class="highlight">{{ user.username }}</span></td><td align="right"><a href="/accounts/logout/">Выход</a></td></table>
+                    <table width="100%" class="gradient"><tr><td align="left" class="headerText"><a href="/chapter/">Главная</a>{% block menu %}{% endblock %}</td><td align="right" class="headerText">Пользователь: <span class="headerText highlight">{{ user.username }}</span></td><td align="right"><a href="/accounts/logout/">Выход</a></td></tr></table>
                 {% endif %}
             {% endblock %}
 

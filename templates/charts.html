@@ -1,44 +1,8 @@
 {% extends "base.html" %}
+{% block menu %}
+    » <a href="/statistics/students/">Статистика по студентам</a> » Результат
+{% endblock %}
 {% block main%}
     <h2>Студент: {{ student }}; Раздел: {{ chapter.shortName }}</h2>
     <img src="/statistics/chart/chapter/{{ 1 }}/student/{{ student.id }}/draw/"/>
-    <dl id="csschart">
-
-		<dt>Day 1</dt>
-		<dd class="first"><span class="p36"><em>36</em></span></dd>
-
-		<dt>Day 2</dt>
-		<dd><span class="type1 p45"><em>45</em></span></dd>
-
-		<dt>Day 3</dt>
-		<dd><span class="type1 p51"><em>51</em></span></dd>
-
-		<dt>Day 4</dt>
-		<dd><span class="type1 p48"><em>48</em></span></dd>
-
-		<dt>Day 5</dt>
-		<dd><span class="type1 p55"><em>55</em></span></dd>
-
-		<dt>Day 6</dt>
-		<dd><span class="type1 p80"><em>80</em></span></dd>
-
-		<dt>Day 7</dt>
-		<dd><span class="type1 p72"><em>72</em></span></dd>
-
-		<dt>Day 8</dt>
-		<dd><span class="type1 p71"><em>71</em></span></dd>
-
-		<dt>Day 9</dt>
-		<dd><span class="type1 p64"><em>64</em></span></dd>
-
-		<dt>Day 10</dt>
-		<dd><span class="type1 p55"><em>55</em></span></dd>
-
-		<dt>Day 11</dt>
-		<dd><span class="type1 p62"><em>62</em></span></dd>
-
-		<dt>Day 12</dt>
-		<dd><span class="type1 p44"><em>44</em></span></dd>
-
-</dl>
 {% endblock %}

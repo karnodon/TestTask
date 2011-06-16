@@ -7,6 +7,9 @@
 a {
     color: #3869FF;
 }
+body {
+    font-size: larger;
+}
 h1 {
     text-align:center;
     color:#3869FF;
@@ -35,7 +38,6 @@ td.task {
 }
 .highlight {
     font-weight:bold;
-    color:#3869FF;
 }
 
 .gradient {
@@ -69,4 +71,35 @@ td.task {
 }
 .copyright {
     font-size: small;
+}
+div.task {
+    background-color: #faebd7;
+    width: 800px;
+    padding-left: 10px;
+    border-left: solid 1px #333333;
+    border-right: solid 1px #333333;
+}
+
+div.correct {
+    background-color: #34E294;
+}
+div.incorrect {
+    background-color: #FF9E6D;
+}
+
+div.last {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    margin-bottom: 10px;
+    border-bottom: solid 1px #333333;
+}
+
+div.first {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-top: solid 1px #333333;
+}
+
+.headerText {
+    color: #3869FF;
 }

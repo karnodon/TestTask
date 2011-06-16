@@ -1,8 +1,11 @@
 {% extends "base.html" %}
+{% block menu%}
+    » Статистика по тестам
+{% endblock %}
 {% block main %}
     {{ currentuser }}
-    <table>
-        <tr class="gradient"><th>Учащийся</th><th>Дата</th><th colspan="{{ stats.values.0.0.1|length }}">Задания</th><th align="center" rowspan="2">Балл</th></tr>
+    <table width="100%">
+        <tr class="gradient"><th width="20%">Учащийся</th><th width="10%">Дата</th><th colspan="{{ stats.values.0.0.1|length }}">Задания</th><th align="center" rowspan="2">Балл</th></tr>
         {% for chap, st in stats.items %}
             {% for stat in st %}
                 {% if forloop.first %}
@@ -14,7 +17,7 @@
                 <tr {% if forloop.counter|divisibleby:"2"  %} style="background-color: #00FFFF;" {% endif %}>
                     <td>{{ stat.0.student }}</td><td>{{ stat.0.testDate|date:"d/m/Y" }}</td>
                     {% for item in stat.1 %}
-                        <td>
+                        <td align="center">
                             {% if item %}
                                 <img src="/static/images/checkmark.png" alt="" width="20" height="20">
                             {% else %}

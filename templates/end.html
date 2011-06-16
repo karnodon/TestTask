@@ -1,5 +1,10 @@
 {% extends "base.html" %}
     {% block title %}{% if teacherMode %}Результаты{% else %}Конец{% endif %} {% endblock %}
+{% block menu %}
+    {% if teacherMode %}
+        » <a href="/statistics/students/">Статистика по студентам</a> » Результат
+    {% endif %}
+{% endblock %}
 {% block main %}
     {% if teacherMode %}
         <p>Результаты тестирования {{ session.student }} по разделу "{{ chapter }}"</p>
@@ -18,33 +23,34 @@
             {% for answer in answers %}
                 <tr>
                     <td>
-                        <table style="border-width: 1px; border-style: solid; border-radius: 8px;" width="800">
-                            <tr>
-                                <td style="background-color: #faebd7;" {% if answer.actual|length > 0 %}
+                            <div class="task first">
+                                {% if answer.actual|length > 0 %}
                                     
-                                {% endif %} >{% if answer.actual|length == 0 %}<img align="middle" height="32" width="32" src="/static/images/checkmark.png">{% else %}<img align="middle" height="32" width="32" src="/static/images/error.png">{% endif %}Задача: {{ answer.task }}</td>
-                            </tr>
-                            <tr>
-                                <td style="background-color: #34E294;">Правильно
-                                    <ul>
+                                {% endif %}
+                                {% if answer.actual|length == 0 %}
+                                    <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
+                                {% else %}
+                                    <img align="middle" height="32" width="32" src="/static/images/error.png">
+                                {% endif %}Задача: {{ answer.task }}
+                            </div>
+                            <div class="task correct   {% if answer.actual|length == 0 %}last{% endif %}">
+                                Правильно
+                                    <ul style="margin-bottom: 0;">
                                     {% for item in answer.correct %}
                                         <li>{{ item }}</li>
                                     {% endfor %}
                                     </ul>
-                                </td>
-                            </tr>
+                            </div>
                             {% if answer.actual|length > 0 %}
-                            <tr>
-                                <td style="background-color: #FF9E6D;">Неправильно
-                                    <ul>
+                            <div  class="incorrect task last">
+                                Неправильно
+                                    <ul >
                                     {% for item in answer.actual %}
                                         <li>{{ item }}</li>
                                     {% endfor %}
                                     </ul>
-                                </td>
-                            </tr>
+                            </div>
                             {% endif %}
-                        </table>
                     </td>
                 </tr>
             {% endfor %}
