@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-    {% block title %}{{ task.chapter.shortName }} {% if task.final %}ЗАЧЕТ {% endif %} {% endblock %}
+{% block links %}<script type="text/javascript" src="/static/scripts/task.js"></script>{% endblock %}
+{% block title %}{{ task.chapter.shortName }} {% if task.final %}ЗАЧЕТ {% endif %} {% endblock %}
 {% block header %}
     {{ block.super }}
-    <table align="center"><tr>
+    <table align="center" cellspacing ="5"><tr>
         {% for item in list %}
-            <td align="center" class="task button"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
+            <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ item.id }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
                 {% if task == item %}
                     <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
                 {% else %}
@@ -13,8 +14,7 @@
             </a></td>
         {% endfor %}
     </tr></table>
-    <h2>{{ task.title }}</h2>
-    <hr>
+    <h2>{{ task.title }}:</h2>
 {% endblock %}
 {% block main %}
     <p>{{ task.description|safe }}</p>
@@ -34,9 +34,11 @@
             </label><br/>
         {% endfor %}
         {% if task.position == list|length %}
-            <input type="submit" value="Закончить">
+            <input type="submit" value="Закончить" style="background: url('/static/images/bg_task.png') repeat-x;">
         {% else %}
-            <input type="submit" value="Следующий">
+            <input type="submit" value="Следующий" style="background: url('/static/images/bg_task.png') repeat-x;">
         {% endif %}
+        <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
+        <span id = "tictacdisplay">{{ tictac }}</span>
     </form>
 {% endblock %}

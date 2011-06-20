@@ -2,7 +2,7 @@
 # coding=cp1251
 from cStringIO import StringIO
 from datetime import datetime
-import logging
+#import logging
 import time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
@@ -16,9 +16,9 @@ from reportlab.pdfgen import canvas
 
 from Test.models import Chapter, Task, Option, TestSession
 import settings
-l = logging.getLogger('django.db.backends')
-l.setLevel(logging.DEBUG)
-l.addHandler(logging.StreamHandler())
+#l = logging.getLogger('django.db.backends')
+#l.setLevel(logging.DEBUG)
+#l.addHandler(logging.StreamHandler())
 class Summary:
     def __init__(self, taskText, correctText, actualText):
         self.task = taskText
@@ -69,10 +69,14 @@ def task(request, taskId):
             type += 1
         if opt.value:
             type = -1
+    try:
+        tictac = request.session['tictac']
+    except KeyError:
+        tictac = 0
     taskList = Task.objects.filter(chapter = task.chapter.id)
     return render_to_response("task.html", {'task': task, 'options_list' : options,
                                             'type': type,
-                                            'list' : taskList},context_instance=RequestContext(request))
+                                            'list' : taskList, 'tictac' : tictac},context_instance=RequestContext(request))
 @login_required
 def add_answer(request, taskId):
     try:
@@ -116,11 +120,13 @@ def add_answer(request, taskId):
                     answer.selected.add(opt)
             answer.position = task.position
             answer.save()
-        nextTask = Task.objects.filter(chapter = task.chapter, position = task.position + 1)
-        nextTaskId = 0
-        if nextTask.count() > 0:
-            nextTaskId = nextTask[0].id
-        return redirect('/chapter/%d/task/%d/'%(task.chapter_id,nextTaskId), context_instance=RequestContext(request))
+            request.session['tictac'] = request.POST['tictac']
+        try:
+            nextTask = Task.objects.get(chapter = task.chapter, position = task.position + 1)
+            nextTaskId = nextTask.id
+        except Task.DoesNotExist:
+            nextTaskId = 0
+        return redirect('/chapter/%d/task/%d/'%(task.chapter_id, nextTaskId), context_instance=RequestContext(request))
     except Task.DoesNotExist:
         return redirect("/chapter/")
 
@@ -167,7 +173,7 @@ def end(request, chapterId):
         del request.session['test']
         return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacherMode': False,
                                            'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
-                                           'answers' : aggregate}, context_instance=RequestContext(request))
+                                           'answers' : aggregate, 'tictac' : request.session['tictac']}, context_instance=RequestContext(request))
     except (KeyError, Chapter.DoesNotExist):
         return redirect("/chapter/")
 
