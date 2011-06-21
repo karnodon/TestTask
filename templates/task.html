@@ -1,19 +1,25 @@
 {% extends "base.html" %}
 {% block links %}<script type="text/javascript" src="/static/scripts/task.js"></script>{% endblock %}
 {% block title %}{{ task.chapter.shortName }} {% if task.final %}ЗАЧЕТ {% endif %} {% endblock %}
+{% block loader %}timedCount();{% endblock %}
 {% block header %}
     {{ block.super }}
-    <table align="center" cellspacing ="5"><tr>
-        {% for item in list %}
-            <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ item.id }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
-                {% if task == item %}
-                    <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
-                {% else %}
-                    {{ item.position }}
-                {% endif %}
-            </a></td>
-        {% endfor %}
-    </tr></table>
+    <table cellpadding="0" cellspacing="0" align="center" width="100%">
+        <tr>
+            <td id = "tictacdisplay" align="left"></td>
+            <td align="center"><table align="center" cellspacing ="5"><tr>
+                {% for item in list %}
+                    <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ item.id }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
+                        {% if task == item %}
+                            <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
+                        {% else %}
+                            {{ item.position }}
+                        {% endif %}
+                    </a></td>
+                {% endfor %}
+            </tr></table></td>
+        </tr>
+    </table>
     <h2>{{ task.title }}:</h2>
 {% endblock %}
 {% block main %}
@@ -33,12 +39,7 @@
                 {% endif %}
             </label><br/>
         {% endfor %}
-        {% if task.position == list|length %}
-            <input type="submit" value="Закончить" style="background: url('/static/images/bg_task.png') repeat-x;">
-        {% else %}
-            <input type="submit" value="Следующий" style="background: url('/static/images/bg_task.png') repeat-x;">
-        {% endif %}
+        <input type="submit" value="{% if task.position == list|length %}Закончить{% else %}Следующий{% endif %}" style="background: url('/static/images/bg_task.png') repeat-x;" onclick="return validateAnswer()">
         <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
-        <span id = "tictacdisplay">{{ tictac }}</span>
     </form>
 {% endblock %}

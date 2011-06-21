@@ -6,7 +6,7 @@
     {% block links %}{% endblock %}
     <title>{% block title %}Тестирование{% endblock %}</title>
 </head>
-<body>
+<body onload="{% block loader %}{% endblock %}">
 <table class="back" border="1" width="800">
     <tr>
         <td>

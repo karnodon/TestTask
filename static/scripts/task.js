@@ -22,11 +22,11 @@ function timedCount() {
         document.getElementById('tictacdisplay').innerHTML = formatTicTac();
     }
     catch (err) {}
-    timer = setTimeout("timedCount()", 100);
+    timer = setTimeout("timedCount()", 1000);
 }
 
 function formatTicTac() {
-    var h =Math.floor(c/3600);
+    var h = Math.floor(c/3600);
     if (h < 10) {
         h = "0" + h.toString();
     }
@@ -41,4 +41,12 @@ function formatTicTac() {
     return h + ":" + m + ":" + s;
 }
 
-timedCount();
+function validateAnswer() {
+    var opts = document.getElementsByName('option');
+    for (var i = 0; i < opts.length; i++) {
+        var opt = opts[i];
+        if ((opt.type == 'text' && opt.value != '') || opt.checked)
+            return true;
+    }
+    return false;
+}

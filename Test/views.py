@@ -50,6 +50,13 @@ def chapters(request, chapterId=None, final = False):
             except TestSession.DoesNotExist:
                 pass
         firstTask = Task.objects.get(chapter = chapterId, position = 1)
+        testSession = TestSession()
+        testSession.testDate = datetime.now()
+        testSession.duration = 0
+        testSession.student = request.user
+        testSession.final = request.session.get('final', None)
+        testSession.save()
+        request.session['test'] = testSession
         return task(request, firstTask.id)
     else:
         chapterList = Chapter.objects.filter(active = True)
@@ -69,14 +76,13 @@ def task(request, taskId):
             type += 1
         if opt.value:
             type = -1
-    try:
-        tictac = request.session['tictac']
-    except KeyError:
-        tictac = 0
+    testSession = request.session.get('test')
+    testSession.duration = (datetime.now() - testSession.testDate).seconds
+    testSession.save()
     taskList = Task.objects.filter(chapter = task.chapter.id)
     return render_to_response("task.html", {'task': task, 'options_list' : options,
                                             'type': type,
-                                            'list' : taskList, 'tictac' : tictac},context_instance=RequestContext(request))
+                                            'list' : taskList, 'tictac' : testSession.duration},context_instance=RequestContext(request))
 @login_required
 def add_answer(request, taskId):
     try:
@@ -86,18 +92,7 @@ def add_answer(request, taskId):
                 testSession = request.session['test']
             except KeyError :
                 testSession = None
-            if task.position == 1 and testSession is None:
-                try:
-                    final = request.session['final']
-                except KeyError:
-                    final = False
-                testSession = TestSession()
-                testSession.testDate = datetime.now()
-                testSession.duration = 0
-                testSession.student = request.user
-                testSession.final = final
-                testSession.save()
-                request.session['test'] = testSession
+
             chosen = request.POST.getlist('option')
             answers = testSession.answer_set.all()
             answer  = None
@@ -120,7 +115,6 @@ def add_answer(request, taskId):
                     answer.selected.add(opt)
             answer.position = task.position
             answer.save()
-            request.session['tictac'] = request.POST['tictac']
         try:
             nextTask = Task.objects.get(chapter = task.chapter, position = task.position + 1)
             nextTaskId = nextTask.id
@@ -173,7 +167,7 @@ def end(request, chapterId):
         del request.session['test']
         return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacherMode': False,
                                            'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
-                                           'answers' : aggregate, 'tictac' : request.session['tictac']}, context_instance=RequestContext(request))
+                                           'answers' : aggregate}, context_instance=RequestContext(request))
     except (KeyError, Chapter.DoesNotExist):
         return redirect("/chapter/")
 
