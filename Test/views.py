@@ -82,7 +82,10 @@ def task(request, taskId):
     taskList = Task.objects.filter(chapter = task.chapter.id)
     return render_to_response("task.html", {'task': task, 'options_list' : options,
                                             'type': type,
-                                            'list' : taskList, 'tictac' : testSession.duration},context_instance=RequestContext(request))
+                                            'list' : taskList,
+                                            'tictac' : testSession.duration,
+                                            'limit' : task.chapter.timeLimit},
+                              context_instance=RequestContext(request))
 @login_required
 def add_answer(request, taskId):
     try:

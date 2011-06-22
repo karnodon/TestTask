@@ -15,6 +15,7 @@ class Chapter (models.Model):
     shortName = models.CharField(max_length=30)
     description = models.CharField(max_length=100)
     active = models.BooleanField(default=False)
+    timeLimit = models.IntegerField(default=0)
     def __unicode__(self):
         return self.shortName
 

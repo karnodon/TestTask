@@ -8,10 +8,15 @@
 var c = 0;
 var timer;
 var timer_is_on = 0;
+var timeIsUp = false;
 
 function timedCount() {
     try {
-        c =  parseInt(document.getElementById('tictac').value);
+        c = parseInt(document.getElementById('tictac').value);
+        var limit = parseInt(document.getElementById('limit').value);
+        if (limit > 0 && limit <= c) {
+            timeIsUp = true;
+        }
     }
     catch (err) {
         c = 0;
@@ -19,10 +24,15 @@ function timedCount() {
     c = c + 1;
     try {
         document.getElementById('tictac').value = c;
-        document.getElementById('tictacdisplay').innerHTML = formatTicTac();
+        if (timeIsUp) {
+            document.getElementById('tictacdisplay').innerHTML = 'Время истекло!';
+        } else {
+            document.getElementById('tictacdisplay').innerHTML = formatTicTac();
+        }
     }
     catch (err) {}
-    timer = setTimeout("timedCount()", 1000);
+    if (!timeIsUp)
+        timer = setTimeout("timedCount()", 1000);
 }
 
 function formatTicTac() {
@@ -38,7 +48,7 @@ function formatTicTac() {
     if (s < 10) {
         s = "0" + s.toString();
     }
-    return h + ":" + m + ":" + s;
+    return "Прошло " + h + ":" + m + ":" + s;
 }
 
 function validateAnswer() {
@@ -46,7 +56,7 @@ function validateAnswer() {
     for (var i = 0; i < opts.length; i++) {
         var opt = opts[i];
         if ((opt.type == 'text' && opt.value != '') || opt.checked)
-            return true;
+            return !timeIsUp;
     }
     return false;
 }
