@@ -2,7 +2,7 @@
     color: #3869FF;
 }*/
 .back {
-    background-image:url("/static/images/back_cell.jpg");
+    background: url("/static/images/back_cell.jpg") repeat;
 }
 a {
     color: #3869FF;

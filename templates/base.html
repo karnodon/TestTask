@@ -11,7 +11,7 @@
     <tr>
         <td>
             {% block header %}
-                <H1><img src="/static/images/logo.jpg" alt="ГОУ 1748 ЦО Вертикаль" align="middle" height="40">Тестирование по математике</H1>
+                <H1><img src="/static/images/logo.jpg" alt="ГОУ 1748 ЦО Вертикаль" height="40" style="vertical-align: top;" align="left">Тестирование по математике</H1>
                 {% if user.is_authenticated %}
                     <table width="100%" class="gradient"><tr><td align="left" class="headerText"><a href="/chapter/">Главная</a>{% block menu %}{% endblock %}</td><td align="right" class="headerText">Пользователь: <span class="headerText highlight">{{ user.username }}</span></td><td align="right"><a href="/accounts/logout/">Выход</a></td></tr></table>
                 {% endif %}

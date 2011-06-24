@@ -9,11 +9,12 @@ var c = 0;
 var timer;
 var timer_is_on = 0;
 var timeIsUp = false;
+var limit = 0;
 
 function timedCount() {
     try {
         c = parseInt(document.getElementById('tictac').value);
-        var limit = parseInt(document.getElementById('limit').value);
+        limit = parseInt(document.getElementById('limit').value);
         if (limit > 0 && limit <= c) {
             timeIsUp = true;
         }
@@ -26,7 +27,11 @@ function timedCount() {
         document.getElementById('tictac').value = c;
         if (timeIsUp) {
             document.getElementById('tictacdisplay').innerHTML = 'Время истекло!';
+            document.getElementById('tictacdisplay').style.textDecoration = '';
         } else {
+            if (limit - c < 10) {
+                document.getElementById('tictacdisplay').style.color = 'red';
+            }
             document.getElementById('tictacdisplay').innerHTML = formatTicTac();
         }
     }
@@ -35,20 +40,23 @@ function timedCount() {
         timer = setTimeout("timedCount()", 1000);
 }
 
-function formatTicTac() {
-    var h = Math.floor(c/3600);
+function formatInterval(interval) {
+    var h = Math.floor(interval / 3600);
     if (h < 10) {
         h = "0" + h.toString();
     }
-    var m = Math.floor(c % 3600 /60);
+    var m = Math.floor(interval % 3600 / 60);
     if (m < 10) {
         m = "0" + m.toString();
     }
-    var s = (c % 3600 % 60);
+    var s = (interval % 3600 % 60);
     if (s < 10) {
         s = "0" + s.toString();
     }
-    return "Прошло " + h + ":" + m + ":" + s;
+    return h + ":" + m + ":" + s;
+}
+function formatTicTac() {
+    return "Осталось " + formatInterval(limit -c) ;
 }
 
 function validateAnswer() {

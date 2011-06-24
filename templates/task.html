@@ -6,8 +6,8 @@
     {{ block.super }}
     <table cellpadding="0" cellspacing="0" align="center" width="100%">
         <tr>
-            <td id="tictacdisplay" align="left" width="140"></td>
-            <td align="left"><table align="center" cellspacing ="5"><tr>
+            <td id="tictacdisplay" align="left" width="150" style="font-size: smaller;"></td>
+            <td align="left"><table align="left" cellspacing ="5" cellpadding="0"><tr>
                 {% for item in list %}
                     <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ item.id }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
                         {% if task == item %}
