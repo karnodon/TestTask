@@ -24,6 +24,7 @@ class Task (models.Model):
     description = models.CharField(max_length=400)
     position = models.IntegerField()
     chapter = models.ForeignKey(Chapter)
+    theoryLink = models.CharField(blank=True, max_length=400)
     def __unicode__(self):
         return  self.title
     class Meta:

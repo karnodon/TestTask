@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
-from Test.views import chapters, task, end, add_answer, students, test_detail, tests, tests_to_pdf, test_chart, draw_chart
+from Test.views import chapters, task, end, add_answer, students, test_detail, tests, tests_to_pdf, test_chart, draw_chart, theory_reader
 
 admin.autodiscover()
 registerFont(TTFont('Calibri', 'Calibri.ttf'))
@@ -18,6 +18,7 @@ urlpatterns = patterns('',
                        (r'^chapter/([\d]*)/task/0/$', end),
                        (r'^chapter/[\d]*/task/([\d]*)/$', task),
                        (r'^chapter/[\d]*/task/([\d]*)/answer/$', add_answer),
+                       (r'^theory/[\w]*.html$', theory_reader),
                        (r'^statistics/students/$', students),
                        (r'^statistics/tests/$', tests),
                        (r'^statistics/tests/pdf/$', tests_to_pdf, {'chapterId' : 1}),

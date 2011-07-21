@@ -20,10 +20,11 @@ import settings
 #l.setLevel(logging.DEBUG)
 #l.addHandler(logging.StreamHandler())
 class Summary:
-    def __init__(self, taskText, correctText, actualText):
+    def __init__(self, taskText, correctText, actualText, link = None):
         self.task = taskText
         self.correct = correctText
         self.actual = actualText
+        self.link = link
 
 
 def chapter_id_for_test_session(test_session):
@@ -152,7 +153,7 @@ def get_test_session_data(testSession):
         else:
             testSession.correct += 1
         aggregate.append(Summary(taskText=task.title,
-                                 correctText=correctTexts, actualText=actualTexts))
+                                 correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
     testSession.total = len(aggregate)
     testSession.save()
     return aggregate
@@ -223,6 +224,10 @@ def tests(request):
         return render_to_response("tests.html", {'stats' : stats}, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
+
+@login_required
+def theory_reader(request):
+    return render_to_response(request.get_full_path()[1:])#cut off leading slash
 
 def tests_to_pdf(request, chapterId = None):
     # Create the HttpResponse object with the appropriate PDF headers.

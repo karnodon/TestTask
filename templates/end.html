@@ -24,14 +24,11 @@
                 <tr>
                     <td>
                             <div class="task first">
-                                {% if answer.actual|length > 0 %}
-                                    
-                                {% endif %}
                                 {% if answer.actual|length == 0 %}
                                     <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
                                 {% else %}
                                     <img align="middle" height="32" width="32" src="/static/images/error.png">
-                                {% endif %}Задача: {{ answer.task }}
+                                {% endif %}Задача: {{ answer.task }} {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
                             </div>
                             <div class="task correct   {% if answer.actual|length == 0 %}last{% endif %}">
                                 Правильно
