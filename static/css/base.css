@@ -9,6 +9,7 @@ a {
 }
 body {
     font-size: larger;
+    height: 500px;
 }
 h1 {
     text-align:center;
@@ -73,6 +74,7 @@ td.task {
 }
 .copyright {
     font-size: small;
+    vertical-align: bottom;
 }
 div.task {
     background-color: #faebd7;
@@ -119,4 +121,101 @@ li.testCorrect {
 
 li.testIncorrect {
     list-style: circle;
+}
+
+/*body {*/
+	/*margin: 0; padding: 0;*/
+	/*font: 10px normal Arial, Helvetica, sans-serif;*/
+	/*background: #ddd url(/static/images/body_bg.gif) repeat-x;*/
+/*}*/
+.container {
+	width: 960px;
+	margin: 0 auto;
+	position: relative;
+}
+#header {
+	background: url(/static/images/header_bg.gif) no-repeat center top;
+	/*//padding-top: 120px;*/
+}
+#header .disclaimer {
+	color: #999;
+	padding: 100px 0 7px 0;
+	text-align: right;
+	display: block;
+	position: absolute;
+	top: 0; right: 0;
+}
+#header .disclaimer a {	color: #ccc;}
+ul.topnav {
+	list-style: none;
+	padding: 0 20px;
+	margin: 0;
+	float: left;
+	width: 920px;
+	background: #3869FF;
+	background: url(/static/images/topnav_bg.gif) repeat-x;
+    font: 12px normal Arial, Helvetica, sans-serif;
+}
+ul.topnav li {
+    font: 12px normal Arial, Helvetica, sans-serif;
+	float: left;
+	margin: 0;
+	padding: 0 15px 0 0;
+	position: relative;/* --Declare X and Y axis base--*/
+}
+ul.topnav li a{
+	padding: 10px 5px;
+	color: #fff;
+	display: block;
+	text-decoration: none;
+	float: left;
+}
+ul.topnav li a:hover{
+	background: url(/static/images/topnav_hover.gif) no-repeat center top;
+}
+ul.topnav li span {/* --Drop down trigger styles--*/
+	width: 17px;
+	height: 35px;
+	float: left;
+	background: url(/static/images/subnav_btn.gif) no-repeat center top;
+}
+ul.topnav li span.subhover {background-position: center bottom; cursor: pointer;} /*--Hover effect for trigger--*/
+ul.topnav li ul.subnav {
+	list-style: none;
+	position: absolute; /*--Important - Keeps subnav from affecting main navigation flow--*/
+	left: 0; top: 35px;
+	background: #3869FF;
+	margin: 0; padding: 0;
+	display: none;
+	float: left;
+	width: 220px;
+	-moz-border-radius-bottomleft: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	border: 1px solid #111;
+}
+ul.topnav li ul.subnav li{
+	margin: 0; padding: 0;
+	border-top: 1px solid #287777;/* --Create bevel effect--*/
+	border-bottom: 1px solid #59EBEB;/* --Create bevel effect--*/
+	clear: both;
+	width: 220px;
+}
+html ul.topnav li ul.subnav li a {
+	float: left;
+	width: 195px;
+	background: #41B8B8 url(/static/images/dropdown_linkbg.gif) no-repeat 10px center;
+	padding-left: 20px;
+}
+html ul.topnav li ul.subnav li a:hover {/* --Hover effect for subnav links--*/
+	background: #287777 url(/static/images/dropdown_linkbg.gif) no-repeat 10px center;
+}
+#header img {
+	margin: 20px 0 10px;
+}
+
+.mainText {
+    font-size: x-large;
+    font-weight: bolder;
 }

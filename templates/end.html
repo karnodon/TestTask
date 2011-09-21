@@ -1,18 +1,18 @@
 {% extends "base.html" %}
-    {% block title %}{% if teacherMode %}Результаты{% else %}Конец{% endif %} {% endblock %}
+    {% block title %}{% if teacher %}Результаты{% else %}Конец{% endif %} {% endblock %}
 {% block menu %}
-    {% if teacherMode %}
+    {% if teacher %}
         » <a href="/statistics/students/">Статистика по студентам</a> » Результат
     {% endif %}
 {% endblock %}
 {% block main %}
-    {% if teacherMode %}
+    {% if teacher %}
         <p>Результаты тестирования {{ session.student }} по разделу "{{ chapter }}"</p>
     {% else %}
         <p>Тестирование по разделу {{ chapter }} завершено!</p>
     {% endif %}
     <p>
-        {% if teacherMode %}
+        {% if teacher %}
             {{ session.student }} ответил 
         {% else %}
             Вы ответили

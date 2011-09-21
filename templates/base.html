@@ -2,18 +2,75 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $("ul.subnav").parent().append("<span></span>"); //Only shows drop down trigger when js is enabled - Adds empty span tag after ul.subnav
+
+            $("ul.topnav li span").click(function() { //When trigger is clicked...
+
+                //Following events are applied to the subnav itself (moving subnav up and down)
+                $(this).parent().find("ul.subnav").slideDown('fast').show(); //Drop down the subnav on click
+
+                $(this).parent().hover(function() {
+                }, function(){
+                    $(this).parent().find("ul.subnav").slideUp('slow'); //When the mouse hovers out of the subnav, move it back up
+                });
+
+                //Following events are applied to the trigger (Hover events for the trigger)
+            }).hover(function() {
+                        $(this).addClass("subhover"); //On hover over, add class "subhover"
+                    }, function(){	//On Hover Out
+                        $(this).removeClass("subhover"); //On hover out, remove class "subhover"
+                    });
+
+        });
+    </script>
+
     <link type="text/css"  href="/static/css/base.css" rel="stylesheet"/>
+    <link type="text/css" href="/static/css/jqueryslidemenu.css" rel="stylesheet"/>
     {% block links %}{% endblock %}
     <title>{% block title %}Тестирование{% endblock %}</title>
 </head>
 <body onload="{% block loader %}{% endblock %}">
 <table class="back" border="1" width="800">
-    <tr>
-        <td>
+    <tr height="500">
+        <td valign="top">
             {% block header %}
                 <H1><img src="/static/images/logo.jpg" alt="ГОУ 1748 ЦО Вертикаль" style="vertical-align: top;" align="left">Тестирование по математике</H1>
                 {% if user.is_authenticated %}
-                    <table width="100%" class="gradient"><tr><td align="left" class="headerText"><a href="/chapter/">Главная</a>{% block menu %}{% endblock %}</td><td align="right" class="headerText">Пользователь: <span class="headerText highlight">{{ user.username }}</span></td><td align="right"><a href="/accounts/logout/">Выход</a></td></tr></table>
+                    <table width="100%" class="gradient"><tr><td align="left" class="headerText">Пользователь: <span class="headerText highlight">{{ user.username }}</span></td><td align="right"><a href="/accounts/logout/">Выход</a></td></tr></table>
+                    <div class="container">
+                        <ul class="topnav">
+                            <li><a href="/chapter/">Главная</a></li>
+                            <li>
+                                <a href="#">Тестирование</a>
+                                <ul class="subnav">
+                                    {%  block menuinfo %}
+                                        {% if teacher %}
+                                            <li><a href="/statistics/students/">Статистика по студентам</a></li>
+                                            <li><a href="/statistics/tests/">Статистика по тестам</a></li>
+                                        {% else %}
+                                            {% if chapter_list %}
+                                                {% for item in chapter_list %}
+                                                    <li><a href="{{ item.id }}"><nobr>{{item}}</nobr></a></li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endblock %}
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Информация</a>
+                            </li>
+                            <li><a href="#">Обо мне</a>
+                                <ul class="subnav">
+                                    <li><a href="#">Биография</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 {% endif %}
             {% endblock %}
 

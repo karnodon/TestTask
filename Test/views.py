@@ -35,8 +35,8 @@ def chapter_id_for_test_session(test_session):
 
 
 @login_required
-def chapters(request, chapterId=None, final = False):
-    if chapterId:
+def chapters(request, chapterId=None, final = None):
+    if chapterId and not (final is None):
         try:
             del request.session['test']
         except KeyError:
@@ -60,10 +60,11 @@ def chapters(request, chapterId=None, final = False):
         request.session['test'] = testSession
         return task(request, firstTask.id)
     else:
-        chapterList = Chapter.objects.filter(active = True)
         isTeacher =  bool(request.user.groups.filter(name='teacher'))
-        return render_to_response("chapter.html", {'chapter_list' : chapterList, 'teacher' : isTeacher},
-                                  context_instance=RequestContext(request))
+        params = {'teacher': isTeacher, 'chapter_list': Chapter.objects.filter(active=True)}
+        if chapterId:
+            params['chapterId'] = chapterId
+        return render_to_response("chapter.html", params, context_instance=RequestContext(request))
 @login_required
 def task(request, taskId):
     isTeacher =  bool(request.user.groups.filter(name='teacher'))
@@ -85,7 +86,8 @@ def task(request, taskId):
                                             'type': type,
                                             'list' : taskList,
                                             'tictac' : testSession.duration,
-                                            'limit' : task.chapter.timeLimit},
+                                            'limit' : task.chapter.timeLimit,
+                                            'chapter_list' : Chapter.objects.filter(active = True)},
                               context_instance=RequestContext(request))
 @login_required
 def add_answer(request, taskId):
@@ -169,7 +171,7 @@ def end(request, chapterId):
             send_mail(u"Тестирование завершено", testSession.student.username + u' завершил тестирование по теме ' + chapter.shortName,
                       'frostbeast@mail.ru', [User.objects.get(username='teacher').email])
         del request.session['test']
-        return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacherMode': False,
+        return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacher': False,
                                            'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
                                            'answers' : aggregate}, context_instance=RequestContext(request))
     except (KeyError, Chapter.DoesNotExist):
@@ -183,7 +185,7 @@ def test_detail(request, testId):
         chapter = Chapter.objects.get(id = chapter_id_for_test_session(testSession))
         aggregate = get_test_session_data(testSession)
         return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession,
-                                               'teacherMode': request.user != testSession.student,
+                                               'teacher': request.user != testSession.student,
                                                'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
                                                'answers' : aggregate}, context_instance=RequestContext(request))
     except TestSession.DoesNotExist:
@@ -198,7 +200,7 @@ def students(request):
         for st in students:
             tests = TestSession.objects.filter(student = st.id).order_by('testDate')
             stats[st] = tests
-        return render_to_response("students.html", {'stats' : stats}, context_instance=RequestContext(request))
+        return render_to_response("students.html", {'stats' : stats, 'teacher': True}, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
 
@@ -221,7 +223,7 @@ def tests(request):
                     for ta in testAggregate:
                         taskResults.append(len(ta.actual) == 0)
                     forChapter.append([ft, taskResults])
-        return render_to_response("tests.html", {'stats' : stats}, context_instance=RequestContext(request))
+        return render_to_response("tests.html", {'stats' : stats, 'teacher': True}, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
 

@@ -1,20 +1,18 @@
 {% extends "base.html" %}
 {% block title %} Разделы тестирования{% endblock %}
 {% block main %}
-    {% if teacher %}
-        <a href="/statistics/students/">Посмотреть статистику тестирования по студентам</a><br>
-        <a href="/statistics/tests/">Посмотреть статистику тестирования по тестам</a>
+    <span class="mainText">
+        {% if teacher %}
+            Математика - РУЛИТ!!!
         {% else %}
-
-        {% if chapter_list %}
-            <p>Выберите раздел для тестирования</p>
-            <ul>
-                {% for item in chapter_list %}
-                    <li>{{item}} <a href="{{ item.id }}">Тренировочный тест</a> <a href="{{ item.id }}/final/">Зачетный тест</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Разделы отстутствуют.</p>
+            {% if chapterId %}
+                <ul>
+                    <li><a href="train/">Тренировочный тест</a></li>
+                    <li><a href="final/">Зачетный тест</a></li>
+                </ul>
+            {% else %}
+                Выберите раздел для тестирования
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </span>
 {% endblock %}
