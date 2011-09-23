@@ -34,7 +34,7 @@
     <title>{% block title %}Тестирование{% endblock %}</title>
 </head>
 <body onload="{% block loader %}{% endblock %}">
-<table class="back" border="1" width="800">
+<table class="back" width="800">
     <tr height="500">
         <td valign="top">
             {% block header %}
@@ -75,9 +75,9 @@
             {% endblock %}
 
             {% block main %}{% endblock %}
-            {% block footer %}<br><span class="copyright">© 2011, Морозов Максим, frostbite3-at-gmail.com</span>{% endblock %}
         </td>
     </tr>
+    {% block footer %}<tr><td valign="bottom"><span class="copyright">© 2011, Морозов Максим, frostbite3-at-gmail.com</span></td></tr>{% endblock %}
 </table>
 </body>
 </html>

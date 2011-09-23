@@ -3,6 +3,7 @@
 }*/
 .back {
     background: url("/static/images/back_cell.jpg") repeat;
+    border: solid #287777 thin;
 }
 a {
     color: #3869FF;
