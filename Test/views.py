@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
 from reportlab.graphics.charts.barcharts import VerticalBarChart
-from reportlab.graphics.shapes import Drawing, String, Image
+from reportlab.graphics.shapes import Drawing, String
 from reportlab.pdfgen import canvas
 
 from Test.models import Chapter, Task, Option, TestSession
@@ -26,7 +26,14 @@ class Summary:
         self.actual = actualText
         self.link = link
 
-
+def get_params(request, additional= None):
+    params = {}
+    if request.user.is_authenticated():
+        params = {'teacher': (bool(request.user.groups.filter(name='teacher'))),
+                  'chapter_list': Chapter.objects.filter(active=True)}
+    if additional:
+        params.update(additional)
+    return params
 def chapter_id_for_test_session(test_session):
     try:
         return test_session.answer_set.all()[0].selected.all()[0].task.chapter_id
@@ -34,7 +41,7 @@ def chapter_id_for_test_session(test_session):
         return -1
 
 
-@login_required
+#@login_required
 def chapters(request, chapterId=None, final = None):
     if chapterId and not (final is None):
         try:
@@ -60,8 +67,7 @@ def chapters(request, chapterId=None, final = None):
         request.session['test'] = testSession
         return task(request, firstTask.id)
     else:
-        isTeacher =  bool(request.user.groups.filter(name='teacher'))
-        params = {'teacher': isTeacher, 'chapter_list': Chapter.objects.filter(active=True)}
+        params = get_params(request)
         if chapterId:
             params['chapterId'] = chapterId
         return render_to_response("chapter.html", params, context_instance=RequestContext(request))
@@ -126,7 +132,7 @@ def add_answer(request, taskId):
             nextTaskId = nextTask.id
         except Task.DoesNotExist:
             nextTaskId = 0
-        return redirect('/chapter/%d/task/%d/'%(task.chapter_id, nextTaskId), context_instance=RequestContext(request))
+        return redirect('/chapter/{0:d}/task/{1:d}/'.format(task.chapter_id, nextTaskId), context_instance=RequestContext(request))
     except Task.DoesNotExist:
         return redirect("/chapter/")
 
@@ -161,8 +167,8 @@ def get_test_session_data(testSession):
     return aggregate
 
 @login_required
-def end(request, chapterId):
-    chapter = Chapter.objects.get(id = chapterId)
+def end(request, chapter_id):
+    chapter = Chapter.objects.get(id = chapter_id)
     try:
         testSession = request.session['test']
         testSession.duration = (datetime.now() - testSession.testDate).seconds
@@ -171,9 +177,10 @@ def end(request, chapterId):
             send_mail(u"Тестирование завершено", testSession.student.username + u' завершил тестирование по теме ' + chapter.shortName,
                       'frostbeast@mail.ru', [User.objects.get(username='teacher').email])
         del request.session['test']
-        return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession, 'teacher': False,
-                                           'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
-                                           'answers' : aggregate}, context_instance=RequestContext(request))
+        params = get_params(request, {'chapter' : chapter, 'session' : testSession,
+                                      'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
+                                      'answers' : aggregate})
+        return render_to_response("end.html", params, context_instance=RequestContext(request))
     except (KeyError, Chapter.DoesNotExist):
         return redirect("/chapter/")
 
@@ -184,10 +191,10 @@ def test_detail(request, testId):
         testSession = TestSession.objects.get(id = testId)
         chapter = Chapter.objects.get(id = chapter_id_for_test_session(testSession))
         aggregate = get_test_session_data(testSession)
-        return render_to_response("end.html", {'chapter' : chapter, 'session' : testSession,
-                                               'teacher': request.user != testSession.student,
-                                               'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
-                                               'answers' : aggregate}, context_instance=RequestContext(request))
+        params = get_params(request, {'chapter' : chapter, 'session' : testSession,
+                        'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
+                        'answers' : aggregate})
+        return render_to_response("end.html", params,  context_instance=RequestContext(request))
     except TestSession.DoesNotExist:
         return redirect("/chapter/")
 
@@ -200,7 +207,8 @@ def students(request):
         for st in students:
             tests = TestSession.objects.filter(student = st.id).order_by('testDate')
             stats[st] = tests
-        return render_to_response("students.html", {'stats' : stats, 'teacher': True}, context_instance=RequestContext(request))
+        params = get_params(request, {'stats' : stats})
+        return render_to_response("students.html", params, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
 
@@ -223,7 +231,8 @@ def tests(request):
                     for ta in testAggregate:
                         taskResults.append(len(ta.actual) == 0)
                     forChapter.append([ft, taskResults])
-        return render_to_response("tests.html", {'stats' : stats, 'teacher': True}, context_instance=RequestContext(request))
+        params = get_params(request, {'stats' : stats})
+        return render_to_response("tests.html", params, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
 
@@ -269,11 +278,9 @@ def tests_to_pdf(request, chapterId = None):
 
 def test_chart(request, chapterId = None, studentId = None):
     try:
-        std = User.objects.get(id=studentId)
-        return render_to_response("charts.html", {
-            'student' : std,
-            'chapter' : Chapter.objects.get(id = chapterId)},
-                                  context_instance=RequestContext(request))
+        params = get_params(request,
+                {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapterId)})
+        return render_to_response("charts.html", params, context_instance=RequestContext(request))
     except (ValueError, User.DoesNotExist, Chapter.DoesNotExist):
         return redirect("/chapter/")
 
@@ -316,3 +323,6 @@ def draw_chart(request, chapterId = None, studentId = None):
         return HttpResponse(binaryStuff, 'image/png')
     except ValueError:
         return redirect("/chapter/")
+
+def bio(request):
+    return render_to_response("bio.html", get_params(request), context_instance=RequestContext(request))

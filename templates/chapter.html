@@ -2,7 +2,7 @@
 {% block title %} Разделы тестирования{% endblock %}
 {% block main %}
     <span class="mainText">
-        {% if teacher %}
+        {% if teacher or not user.is_authenticated %}
             Математика - РУЛИТ!!!
         {% else %}
             {% if chapterId %}
