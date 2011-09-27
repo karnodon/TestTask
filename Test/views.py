@@ -6,13 +6,17 @@ from datetime import datetime
 import time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.db.models.query_utils import Q
+from django.forms import forms
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 from reportlab.graphics.shapes import Drawing, String
 from reportlab.pdfgen import canvas
+from Test.forms import SearchTest
 
 from Test.models import Chapter, Task, Option, TestSession
 import settings
@@ -204,10 +208,29 @@ def students(request):
         studentGroup = Group.objects.get(name='student')
         students = studentGroup.user_set.all()
         stats = {}
+        start = None
+        end = None
+        if request.method == 'GET':
+            form = SearchTest(request.GET)
+            if form.is_valid():
+                names = form.cleaned_data['name'].split()
+                if len(names) > 0:
+                    students = students.filter(Q(first_name__icontains = names[0]) | Q(last_name__icontains = names[0]))
+                if len(names) > 1:
+                    students = students.filter(Q(first_name__icontains = names[1]) | Q(last_name__icontains = names[1]))
+                start = form.cleaned_data['start']
+                end = form.cleaned_data['end']
+        else:
+            form = SearchTest()
+
         for st in students:
-            tests = TestSession.objects.filter(student = st.id).order_by('testDate')
-            stats[st] = tests
-        params = get_params(request, {'stats' : stats})
+            ts = TestSession.objects.filter(student=st.id)
+            if start:
+                ts = ts.filter(testDate__gte = start)
+            if end:
+                ts = ts.filter(testDate__lte = end)
+            stats[st] = ts.order_by('testDate')
+        params = get_params(request, {'stats' : stats, 'form' : form})
         return render_to_response("students.html", params, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")

@@ -27,7 +27,6 @@
 
         });
     </script>
-
     <link type="text/css"  href="/static/css/base.css" rel="stylesheet"/>
     {% block links %}{% endblock %}
     <title>{% block title %}Тестирование{% endblock %}</title>
@@ -37,7 +36,7 @@
     <tr height="500">
         <td valign="top">
             {% block header %}
-                <H1><img src="/static/images/logo.jpg" alt="ГОУ 1748 ЦО Вертикаль" style="vertical-align: top;" align="left">Тестирование по математике</H1>
+                <H1><img src="/static/images/logo.jpg" alt="ГОУ 1748 ЦО Вертикаль" style="vertical-align: top;" align="left">Сайт учителя математики Морозовой Ирины Сергеевны</H1>
                 <table width="100%" class="gradient"><tr>
                     <td align="left" class="headerText">Пользователь: <span class="headerText highlight">
                         {% if user.is_authenticated %}{{ user.username }}
@@ -80,7 +79,7 @@
             {% block main %}{% endblock %}
         </td>
     </tr>
-    {% block footer %}<tr><td valign="bottom"><span class="copyright">© 2011, Морозов Максим, frostbite3-at-gmail.com</span></td></tr>{% endblock %}
+    {% block footer %}<tr><td valign="bottom"><span class="copyright">© 2011, Морозова Ирина, Морозов Максим, frostbite3-at-gmail.com</span></td></tr>{% endblock %}
 </table>
 </body>
 </html>
