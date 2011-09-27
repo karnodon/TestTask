@@ -13,7 +13,7 @@
     {% endif %}
     <p>
         {% if teacher %}
-            {{ session.student }} ответил 
+            {{ session.student }} ответил(а) 
         {% else %}
             Вы ответили
         {% endif %} правильно на {{ session.correct }} из {{ session.total }} вопросов за {{ time }}
@@ -28,7 +28,7 @@
                                     <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
                                 {% else %}
                                     <img align="middle" height="32" width="32" src="/static/images/error.png">
-                                {% endif %}Задача: {{ answer.task }} {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
+                                {% endif %} {{ answer.task }} {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
                             </div>
                             <div class="task correct   {% if answer.actual|length == 0 %}last{% endif %}">
                                 Правильно
