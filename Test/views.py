@@ -6,10 +6,8 @@ from datetime import datetime
 import time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
-from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db.models.query_utils import Q
-from django.forms import forms
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
@@ -43,7 +41,6 @@ def chapter_id_for_test_session(test_session):
         return test_session.answer_set.all()[0].selected.all()[0].task.chapter_id
     except Exception:
         return -1
-
 
 #@login_required
 def chapters(request, chapterId=None, final = None):
@@ -146,24 +143,25 @@ def get_test_session_data(testSession):
     testSession.correct = 0
     for a in answers:
         opts = a.selected.all()
-        task = opts[0].task
         correctTexts = []
         actualTexts = []
-        taskOpts = task.option_set.filter(correct=True)
-        for opt in taskOpts:
-            if opt.value is None or opt.value == '':
-                correctTexts.append(opt.text)
+        if len(opts) > 0:
+            task = opts[0].task
+            taskOpts = task.option_set.filter(correct=True)
+            for opt in taskOpts:
+                if opt.value is None or opt.value == '':
+                    correctTexts.append(opt.text)
+                else:
+                    correctTexts.append(opt.value)
+            if a.value is not None and opts[0].value != a.value:
+                actualTexts.append(a.value)
+            elif opts.count() == 1 and not opts[0].correct:
+                actualTexts.append(opts[0].text)
+            elif len(correctTexts) > 1 and set(opts).intersection(taskOpts) != set(taskOpts):
+                for o in opts:
+                    actualTexts.append(o.text)
             else:
-                correctTexts.append(opt.value)
-        if a.value is not None and opts[0].value != a.value:
-            actualTexts.append(a.value)
-        elif opts.count() == 1 and not opts[0].correct:
-            actualTexts.append(opts[0].text)
-        elif len(correctTexts) > 1 and set(opts).intersection(taskOpts) != set(taskOpts):
-            for o in opts:
-                actualTexts.append(o.text)
-        else:
-            testSession.correct += 1
+                testSession.correct += 1
         aggregate.append(Summary(taskText=task.title,
                                  correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
     testSession.total = len(aggregate)
@@ -229,7 +227,8 @@ def students(request):
                 ts = ts.filter(testDate__gte = start)
             if end:
                 ts = ts.filter(testDate__lte = end)
-            stats[st] = ts.order_by('testDate')
+            if ts.count() > 0:
+                stats[st] = ts.order_by('testDate')
         params = get_params(request, {'stats' : stats, 'form' : form})
         return render_to_response("students.html", params, context_instance=RequestContext(request))
     except ValueError:
@@ -240,21 +239,40 @@ def tests(request):
     try:
         stats = {}
         finalTests = TestSession.objects.filter(final = True)
+        if request.method == 'GET':
+            form = SearchTest(request.GET)
+            if form.is_valid():
+                names = form.cleaned_data['name'].split()
+                if len(names) > 0:
+                    finalTests = finalTests.filter(Q(student__first_name__icontains = names[0]) | Q(student__last_name__icontains = names[0]))
+                if len(names) > 1:
+                    finalTests = finalTests.filter(Q(student__first_name__icontains = names[1]) | Q(student__last_name__icontains = names[1]))
+                start = form.cleaned_data['start']
+                end = form.cleaned_data['end']
+                if start:
+                    finalTests = finalTests.filter(testDate__gte = start)
+                if end:
+                    finalTests = finalTests.filter(testDate__lte = end)
+                if finalTests.count() > 0:
+                    finalTests = finalTests.order_by('student', 'testDate')
+        else:
+            form = SearchTest()
         chapters  = Chapter.objects.filter(active = True)
-        for chapter in chapters:
-            try:
-                forChapter = stats[chapter]
-            except KeyError:
-                forChapter = []
-                stats[chapter] = forChapter
-            for ft in finalTests:
-                if chapter_id_for_test_session(ft) == chapter.id:
-                    testAggregate = get_test_session_data(ft)
-                    taskResults = []
-                    for ta in testAggregate:
-                        taskResults.append(len(ta.actual) == 0)
-                    forChapter.append([ft, taskResults])
-        params = get_params(request, {'stats' : stats})
+        if finalTests.count() > 0:
+            for chapter in chapters:
+                try:
+                    forChapter = stats[chapter]
+                except KeyError:
+                    forChapter = []
+                    stats[chapter] = forChapter
+                for ft in finalTests:
+                    if chapter_id_for_test_session(ft) == chapter.id:
+                        testAggregate = get_test_session_data(ft)
+                        taskResults = []
+                        for ta in testAggregate:
+                            taskResults.append(len(ta.actual) == 0)
+                        forChapter.append([ft, taskResults])
+        params = get_params(request, {'stats' : stats, 'form' : form})
         return render_to_response("tests.html", params, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")

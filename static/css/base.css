@@ -11,19 +11,26 @@ a {
 body {
     font-size: larger;
     height: 500px;
+    font: normal Arial, Helvetica, sans-serif;
 }
 h1 {
+    vertical-align: top;
     text-align:center;
-    color:#3869FF;
+    color:#ffffff;
     background: url("/static/images/bg_header.png") repeat-x;
-    height:40px;
+    height:90px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 h2 {
     text-align:left;
     color:#3869FF;
-    height:20px;
+    height:10px;
     font-size: large;
+    margin-left: 12px;
+    margin-bottom: 0;
+    vertical-align: bottom;
 }
 
 table {
@@ -79,7 +86,7 @@ td.task {
 }
 div.task {
     background-color: #faebd7;
-    width: 800px;
+    width: 700px;
     padding-left: 10px;
     border-left: solid 1px #333333;
     border-right: solid 1px #333333;
@@ -127,7 +134,7 @@ li.testIncorrect {
 /*background: #ddd url(/static/images/body_bg.gif) repeat-x;*/
 /*}*/
 .container {
-    width: 960px;
+    width: 780px;
     margin: 0 auto;
     position: relative;
 }
@@ -149,9 +156,8 @@ ul.topnav {
     padding: 0 20px;
     margin: 0;
     float: left;
-    width: 920px;
-    background: #3869FF;
-    background: url(/static/images/topnav_bg.gif) repeat-x;
+    width: 740px;
+    background: #3869FF url(/static/images/topnav_bg.gif) repeat-x;
     font: 12px normal Arial, Helvetica, sans-serif;
 }
 ul.topnav li {
@@ -253,7 +259,6 @@ html ul.topnav li ul.subnav li a:hover {/* --Hover effect for subnav links--*/
 
 #rounded-corner
 {
-    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     font-size: 12px;
     margin: 10px;
     width: 540px;
@@ -291,14 +296,14 @@ html ul.topnav li ul.subnav li a:hover {/* --Hover effect for subnav links--*/
     border-top: 1px solid #fff;
     color: #669;
 }
-#rounded-corner tfoot td.rounded-foot-left
+/*#rounded-corner tfoot td.rounded-foot-left
 {
     background: #e8edff url('/static/images/botleft.png') left bottom no-repeat;
 }
 #rounded-corner tfoot td.rounded-foot-right
 {
     background: #e8edff url('/static/images/botright.png') right bottom no-repeat;
-}
+}*/
 #rounded-corner tbody tr:hover td
 {
     background: #d0dafd;

@@ -5,20 +5,26 @@
 {% block links %}
 {% endblock %}
 {% block main %}
-    <table id ="rounded-corner" cellspacing="1" cellpadding="1" style="width: 940px;">
+    <H2>Статистика по тестам</H2>
+    {% include "searchform.html" %}
+    <table id ="rounded-corner" cellspacing="1" cellpadding="1" style="width: 760px;">
         <thead>
-        <tr {% comment %}class="gradient"{% endcomment %}><th width="20%" class="rounded-left">Учащийся</th><th width="10%" class="task">Дата</th><th colspan="{{ stats.values.0.0.1|length }}" class="task">Задания</th><th rowspan="2" class="rounded-right task">Балл</th></tr>
-        <tr {% comment %}class="gradient"{% endcomment %}><th colspan="2">Тема</th>
-            {% for item in stats.values.0.0.1 %}
-                <th>{{ forloop.counter }}</th>
-            {% endfor %}
+        <tr><th width="20%" class="rounded-left">Учащийся</th><th width="10%" class="task">Дата</th><th colspan="{{ stats.values.0.0.1|length }}" class="task">Задания</th><th rowspan="2" class="rounded-right task">Балл</th></tr>
+        <tr><th colspan="2">Тема</th>
+            {% if stats.values.0.0.1|length %}
+                {% for item in stats.values.0.0.1 %}
+                    <th>{{ forloop.counter }}</th>
+                {% endfor %}
+            {% else %}
+                <th></th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
         {% for chap, st in stats.items %}
             {% for stat in st %}
                 {% if forloop.first %}
-                    <tr><th colspan="6" align="left">{{ chap }}</th></tr>
+                    <tr><th colspan="{{ stat.1|length|add:"3" }}" align="left">{{ chap }}</th></tr>
                 {% endif %}
                 <tr{% comment %} {% if forloop.counter|divisibleby:"2"  %} style="background-color: #00FFFF;" {% endif %}{% endcomment %}>
                     <td>{{ stat.0.student.first_name }} {{ stat.0.student.last_name }}</td><td>{{ stat.0.testDate|date:"d/m/Y" }}</td>
@@ -35,6 +41,9 @@
                 </tr>
             {% endfor %}
         {%  endfor %}
+        {% if stats.values|length == 0 %}
+            <tr><td colspan="4">По выбранным параметрам не удалось найти тестов</td></tr>
+        {% endif %}
         </tbody>
     </table>
     <a href="/statistics/tests/pdf">Загрузить в PDF</a>

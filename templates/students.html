@@ -3,35 +3,8 @@
     » Статистика по студентам
 {% endblock %}
 {% block main %}
-    <div id="searchform">
-        <form method="GET">
-            {% if form.non_field_errors %}
-                <div>
-                    {% for err in form.non_field_errors %}
-                        <div class="errormessage">{{ err }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            {% for field in form.visible_fields %}
-                {% for err in field.errors %}
-                    <div class="errormessage">{{ err }}</div>
-                {% endfor %}
-            {% endfor %}
-            <ul>
-                {% for field in form.visible_fields %}
-                    <li {% if field.errors %}class="field_error"{% endif %}>
-                        {{ field.label_tag }}
-                        {{ field }}
-                    </li>
-                {% endfor %}
-                <li>
-                    <input type="submit" title="Найти" value="Найти">
-
-                </li>
-            </ul>
-
-        </form>
-    </div>
+    <H2>Статистика по студентам</H2>
+    {% include "searchform.html" %}
     <table id="rounded-corner">
         <thead>
         <tr>
@@ -67,6 +40,9 @@
                 {% endfor %}
             {% endif %}
         {% endfor %}
+        {% if stats|length == 0 %}
+            <tr><td colspan="3">По выбранным параметрам не удалось найти тестов</td></tr>
+        {% endif %}
         </tbody>
     </table>
 {% endblock %}
