@@ -311,3 +311,7 @@ html ul.topnav li ul.subnav li a:hover {/* --Hover effect for subnav links--*/
 th.task {
     text-align: center;
 }
+
+div.ui-datepicker{
+ font-size:10px;
+}

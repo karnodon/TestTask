@@ -11,6 +11,8 @@ from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
+from reportlab.pdfbase.pdfmetrics import registerFont
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from Test.forms import SearchTest
 
@@ -280,6 +282,7 @@ def theory_reader(request):
     return render_to_response(request.get_full_path()[1:])#cut off leading slash
 
 def tests_to_pdf(request, chapterId = None):
+    registerFont(TTFont('Calibri', 'Calibri.ttf'))
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(mimetype='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=tests.pdf'
@@ -295,11 +298,11 @@ def tests_to_pdf(request, chapterId = None):
     line = 25
     k = 0
     p.drawString(40, 820, u"Учащийся")
-    finalTests = TestSession.objects.filter(final = True)
+    finalTests = TestSession.objects.filter(final = True).order_by('student', 'testDate')
     for ft in finalTests:
         if chapter_id_for_test_session(ft) == chapterId:
             testAggregate = get_test_session_data(ft)
-            p.drawString(40, 800 - line * k, ft.student.username)
+            p.drawString(40, 800 - line * k, ft.student.first_name + " " + ft.student.last_name)
             i = 0
             for ta in testAggregate:
                 p.drawString(140 + i * 20, 800 - line * k, '+' if  not len(ta.actual) else '-')

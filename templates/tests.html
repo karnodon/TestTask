@@ -3,9 +3,12 @@
     » Статистика по тестам
 {% endblock %}
 {% block links %}
+    <link type="text/css" href="/static/css/cupertino/jquery-ui.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/static/scripts/jquery-ui.js"></script>
+    <script type="text/javascript" src="/static/scripts/jquery.ui.datepicker-ru.js"></script>
 {% endblock %}
 {% block main %}
-    <H2>Статистика по тестам</H2>
+    <H2>Статистика по тестам (<a href="/statistics/tests/pdf">Загрузить в PDF</a>)</H2>
     {% include "searchform.html" %}
     <table id ="rounded-corner" cellspacing="1" cellpadding="1" style="width: 760px;">
         <thead>
@@ -46,5 +49,4 @@
         {% endif %}
         </tbody>
     </table>
-    <a href="/statistics/tests/pdf">Загрузить в PDF</a>
 {% endblock %}

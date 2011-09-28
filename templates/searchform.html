@@ -21,9 +21,32 @@
             {% endfor %}
             <li>
                 <input type="submit" title="Найти" value="Найти">
-
             </li>
         </ul>
-
     </form>
 </div>
+{% comment %}<script type="text/javascript">
+     var rus = {
+      Done:           'Готово',
+      Now:            'Сегодня',
+      NextMonth:      'След. Месяц',
+      PrevMonth:      'Прев. Месяц',
+      NextYear:       'След. Год',
+      PrevYear:       'Перед. Год',
+
+      dayNames:        $w('Воскресенье Понедельник Вторник Среда Четверг Пятница Суббота'),
+      dayNamesShort:   $w('Вс Пн Вт Ср Чт Пт Сб'),
+      dayNamesMin:     $w('Вс Пн Вт Ср Чт Пт Сб'),
+      monthNames:      $w('Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь'),
+      monthNamesShort: $w('Янв Фев Мар Апр Май Июнь Июль Авг Сен Окт Нов Дек')
+    };
+//    new Calendar({showTime: false, i18n:rus, format:"%d.%m.%Y"}).assignTo('id_start');
+    new Calendar({showTime: false, i18n:rus, format:"%d.%m.%Y"}).assignTo('id_end');
+</script>{% endcomment %}
+<script>
+    $(function() {
+        $.datepicker.setDefaults( $.datepicker.regional[ "ru" ]);
+        $( "#id_start" ).datepicker( );
+        $( "#id_end" ).datepicker( );
+    });
+</script>
