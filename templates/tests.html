@@ -13,7 +13,7 @@
         <tr><th colspan="2">Тема</th>
             {% if stats.values.0.0.1|length %}
                 {% for item in stats.values.0.0.1 %}
-                    <th>{{ forloop.counter }}</th>
+                    <th align="center">{{ forloop.counter }}</th>
                 {% endfor %}
             {% else %}
                 <th></th>
@@ -26,14 +26,14 @@
                 {% if forloop.first %}
                     <tr><th colspan="{{ stat.1|length|add:"3" }}" align="left">{{ chap }}</th></tr>
                 {% endif %}
-                <tr{% comment %} {% if forloop.counter|divisibleby:"2"  %} style="background-color: #00FFFF;" {% endif %}{% endcomment %}>
-                    <td>{{ stat.0.student.first_name }} {{ stat.0.student.last_name }}</td><td>{{ stat.0.testDate|date:"d/m/Y" }}</td>
+                <tr>
+                    <td>{{ stat.0.student.first_name }} {{ stat.0.student.last_name }}</td><td>{{ stat.0.testDate|date:"j.m.Y" }}</td>
                     {% for item in stat.1 %}
                         <td align="center">
                             {% if item %}
-                                <img src="/static/images/checkmark.png" alt="" width="20" height="20">
+                                <img src="/static/images/checkmark_s.png" alt="" width="20" height="20">
                             {% else %}
-                                <img src="/static/images/error.png" alt="" width="20" height="20">
+                                <img src="/static/images/error_s.png" alt="" width="20" height="20">
                             {% endif %}
                         </td>
                     {% endfor %}

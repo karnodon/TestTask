@@ -11,8 +11,6 @@ from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
-from reportlab.graphics.charts.barcharts import VerticalBarChart
-from reportlab.graphics.shapes import Drawing, String
 from reportlab.pdfgen import canvas
 from Test.forms import SearchTest
 
@@ -319,50 +317,17 @@ def tests_to_pdf(request, chapterId = None):
 
 def test_chart(request, chapterId = None, studentId = None):
     try:
-        params = get_params(request,
-                {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapterId)})
-        return render_to_response("charts.html", params, context_instance=RequestContext(request))
-    except (ValueError, User.DoesNotExist, Chapter.DoesNotExist):
-        return redirect("/chapter/")
-
-def draw_chart(request, chapterId = None, studentId = None):
-    class TestBarChart(Drawing):
-        def __init__(self, width=500, height=300, *args, **kw):
-            Drawing.__init__(self,width,height,*args,**kw)
-            self.add(VerticalBarChart(), name='chart')
-
-            self.add(String(200,180, ''), name='title')
-            self.chart.valueAxis.valueMin = 0
-            #set any shapes, fonts, colors you want here.  We'll just
-            #set a title font and place the chart within the drawing
-            self.chart.x = 20
-            self.chart.y = 20
-            self.chart.width = self.width - 20
-            self.chart.height = self.height - 40
-
-            self.title.fontName = 'Calibri'
-            self.title.fontSize = 12
-
-            #self.chart.data = [[100,150,200,235]]
-
-    #extract the request params of interest.
-    #I suggest having a default for everything.
-    try:
         stats = []
         std = User.objects.get(id=int(studentId))
-        d = TestBarChart()
-        d.chart.categoryAxis.categoryNames = []
         tests = TestSession.objects.filter(final = False, student = std).order_by('testDate')
         for ft in tests:
             if chapter_id_for_test_session(ft) == int(chapterId):
-                stats.append(ft.correct)
-                d.chart.categoryAxis.categoryNames.append(str(ft.testDate))
-        #d.title.text = unicode(Chapter.objects.get(id = chapterId))
-        d.chart.data = [stats]
-    #get a GIF (or PNG, JPG, or whatever)
-        binaryStuff = d.asString('png')
-        return HttpResponse(binaryStuff, 'image/png')
-    except ValueError:
+                stats.append([ft.testDate, ft.correct])
+        params = get_params(request,
+                {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapterId),
+                 'stats' : stats})
+        return render_to_response("charts.html", params, context_instance=RequestContext(request))
+    except (ValueError, User.DoesNotExist, Chapter.DoesNotExist):
         return redirect("/chapter/")
 
 def bio(request):

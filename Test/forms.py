@@ -6,10 +6,10 @@ class SearchTest(forms.Form):
     name = forms.CharField(max_length = 100, required=False, label="",
                            widget=forms.widgets.TextInput(attrs={'placeholder': u'Учащийся'}))
     em = {"required": u"Введите дату", "invalid": u"Неправильный формат даты"}
-    start = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'От'}),
+    start = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'От (дд.мм.гггг)'}),
                             required=False, label="", input_formats = ["%d.%m.%Y"], error_messages = em)
 
-    end = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'До'}),
+    end = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'До (дд.мм.гггг)'}),
                           required=False, label="", input_formats= ["%d.%m.%Y"], error_messages= em)
 
     def clean(self):
