@@ -1,15 +1,15 @@
-# coding=cp1251
+# coding=UTF-8
 from django import forms
 
 __author__ = 'Frostbite'
 class SearchTest(forms.Form):
     name = forms.CharField(max_length = 100, required=False, label="",
-                           widget=forms.widgets.TextInput(attrs={'placeholder': u'Учащийся'}))
-    em = {"required": u"Введите дату", "invalid": u"Неправильный формат даты"}
-    start = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'От (дд.мм.гггг)'}),
+                           widget=forms.widgets.TextInput(attrs={'placeholder': u'РЈС‡Р°С‰РёР№СЃСЏ'}))
+    em = {"required": u"Р’РІРµРґРёС‚Рµ РґР°С‚Сѓ", "invalid": u"РќРµРїСЂР°РІРёР»СЊРЅС‹Р№ С„РѕСЂРјР°С‚ РґР°С‚С‹"}
+    start = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'РћС‚ (РґРґ.РјРј.РіРіРіРі)'}),
                             required=False, label="", input_formats = ["%d.%m.%Y"], error_messages = em)
 
-    end = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'До (дд.мм.гггг)'}),
+    end = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'Р”Рѕ (РґРґ.РјРј.РіРіРіРі)'}),
                           required=False, label="", input_formats= ["%d.%m.%Y"], error_messages= em)
 
     def clean(self):
@@ -18,6 +18,6 @@ class SearchTest(forms.Form):
         e = cleaned_data.get("end")
 
         if s and e and s > e:
-            raise forms.ValidationError(u"Начальная дата не должна быть позже  конечной.")
+            raise forms.ValidationError(u"РќР°С‡Р°Р»СЊРЅР°СЏ РґР°С‚Р° РЅРµ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїРѕР·Р¶Рµ  РєРѕРЅРµС‡РЅРѕР№.")
         # Always return the full collection of cleaned data.
         return cleaned_data

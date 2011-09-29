@@ -13,7 +13,7 @@
     {% endif %}
     <p>
         {% if teacher %}
-            {{ session.student }} ответил(а) 
+            {{ session.student.first_name }} {{ session.student.last_name }} ответил(а)
         {% else %}
             Вы ответили
         {% endif %} правильно на {{ session.correct }} из {{ session.total }} вопросов за {{ time }}

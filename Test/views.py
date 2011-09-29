@@ -1,5 +1,5 @@
 # Create your views here.
-# coding=cp1251
+# coding=UTF-8
 from cStringIO import StringIO
 from datetime import datetime
 #import logging
@@ -176,7 +176,7 @@ def end(request, chapter_id):
         testSession.duration = (datetime.now() - testSession.testDate).seconds
         aggregate = get_test_session_data(testSession)
         if settings.SEND_EMAIL:
-            send_mail(u"Тестирование завершено", testSession.student.username + u' завершил тестирование по теме ' + chapter.shortName,
+            send_mail(u"РўРµСЃС‚РёСЂРѕРІР°РЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ", testSession.student.username + u' Р·Р°РІРµСЂС€РёР» С‚РµСЃС‚РёСЂРѕРІР°РЅРёРµ РїРѕ С‚РµРјРµ ' + chapter.shortName,
                       'frostbeast@mail.ru', [User.objects.get(username='teacher').email])
         del request.session['test']
         params = get_params(request, {'chapter' : chapter, 'session' : testSession,
@@ -238,7 +238,7 @@ def students(request):
 def tests(request):
     try:
         stats = {}
-        finalTests = TestSession.objects.filter(final = True)
+        finalTests = TestSession.objects.filter(final = True).exclude(total = None)
         if request.method == 'GET':
             form = SearchTest(request.GET)
             if form.is_valid():
@@ -297,7 +297,7 @@ def tests_to_pdf(request, chapterId = None):
     # See the ReportLab documentation for the full list of functionality.
     line = 25
     k = 0
-    p.drawString(40, 820, u"Учащийся")
+    p.drawString(40, 820, u"РЈС‡Р°С‰РёР№СЃСЏ")
     finalTests = TestSession.objects.filter(final = True).order_by('student', 'testDate')
     for ft in finalTests:
         if chapter_id_for_test_session(ft) == chapterId:
