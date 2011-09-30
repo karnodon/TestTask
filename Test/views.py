@@ -7,6 +7,7 @@ import time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
 from django.core.mail import send_mail
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
@@ -205,7 +206,7 @@ def students(request):
     try:
         studentGroup = Group.objects.get(name='student')
         students = studentGroup.user_set.all()
-        stats = {}
+        stats = []
         start = None
         end = None
         if request.method == 'GET':
@@ -221,14 +222,25 @@ def students(request):
         else:
             form = SearchTest()
 
-        for st in students:
-            ts = TestSession.objects.filter(student=st.id)
-            if start:
-                ts = ts.filter(testDate__gte = start)
-            if end:
-                ts = ts.filter(testDate__lte = end)
-            if ts.count() > 0:
-                stats[st] = ts.order_by('testDate')
+        ts = TestSession.objects.filter(student__in=students)
+        if start:
+            ts = ts.filter(testDate__gte = start)
+        if end:
+            ts = ts.filter(testDate__lte = end)
+        if ts.count() > 0:
+            stats = list(ts.order_by('student','testDate'))
+            paginator = Paginator(stats, 10)
+            page = request.GET.get('page')
+            if page is None:
+                page = ""
+            try:
+                stats = paginator.page(page)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                stats  = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                stats = paginator.page(paginator.num_pages)
         params = get_params(request, {'stats' : stats, 'form' : form})
         return render_to_response("students.html", params, context_instance=RequestContext(request))
     except ValueError:
