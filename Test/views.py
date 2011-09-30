@@ -209,6 +209,7 @@ def students(request):
         stats = []
         start = None
         end = None
+        page = None
         if request.method == 'GET':
             form = SearchTest(request.GET)
             if form.is_valid():
@@ -219,9 +220,9 @@ def students(request):
                     students = students.filter(Q(first_name__icontains = names[1]) | Q(last_name__icontains = names[1]))
                 start = form.cleaned_data['start']
                 end = form.cleaned_data['end']
+                page = form.cleaned_data['page']
         else:
             form = SearchTest()
-
         ts = TestSession.objects.filter(student__in=students)
         if start:
             ts = ts.filter(testDate__gte = start)
@@ -230,7 +231,7 @@ def students(request):
         if ts.count() > 0:
             stats = list(ts.order_by('student','testDate'))
             paginator = Paginator(stats, 10)
-            page = request.GET.get('page')
+
             if page is None:
                 page = ""
             try:

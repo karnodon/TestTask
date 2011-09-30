@@ -10,21 +10,6 @@
 {% block main %}
     <H2>Статистика по студентам</H2>
     {% include "searchform.html" %}
-    <div class="pagination">
-        <span class="step-links">
-            {% if stats.has_previous %}
-                <a href="?page={{ stats.previous_page_number }}">Назад</a>
-            {% endif %}
-
-            <span class="current">
-            Стр. {{ stats.number }} из {{ stats.paginator.num_pages }}.
-        </span>
-
-            {% if stats.has_next %}
-                <a href="?page={{ stats.next_page_number }}">Вперед</a>
-            {% endif %}
-        </span>
-    </div>
     <table id="rounded-corner">
         <thead>
         <tr>

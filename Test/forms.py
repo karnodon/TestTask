@@ -11,6 +11,7 @@ class SearchTest(forms.Form):
 
     end = forms.DateField(widget=forms.widgets.DateInput(format="%d.%m.%Y", attrs={'placeholder': u'До (дд.мм.гггг)'}),
                           required=False, label="", input_formats= ["%d.%m.%Y"], error_messages= em)
+    page = forms.IntegerField(required=False, widget=forms.widgets.HiddenInput())
 
     def clean(self):
         cleaned_data = self.cleaned_data

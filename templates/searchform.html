@@ -23,30 +23,43 @@
                 <input type="submit" title="Найти" value="Найти">
             </li>
         </ul>
+        {% if stats.paginator and stats.paginator.num_pages > 1%}
+            {{ form.page }}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if stats.has_previous %}
+                        <a id="prev" href="#">Назад</a>
+                    {% endif %}
+                    <span class="current">
+                    Стр. {{ stats.number }} из {{ stats.paginator.num_pages }}.
+                </span>
+                    {% if stats.has_next %}
+                        <a id="next" href="#">Вперед</a>
+                    {% endif %}
+                </span>
+            </div>
+        {% endif %}
     </form>
 </div>
-{% comment %}<script type="text/javascript">
-     var rus = {
-      Done:           'Готово',
-      Now:            'Сегодня',
-      NextMonth:      'След. Месяц',
-      PrevMonth:      'Прев. Месяц',
-      NextYear:       'След. Год',
-      PrevYear:       'Перед. Год',
-
-      dayNames:        $w('Воскресенье Понедельник Вторник Среда Четверг Пятница Суббота'),
-      dayNamesShort:   $w('Вс Пн Вт Ср Чт Пт Сб'),
-      dayNamesMin:     $w('Вс Пн Вт Ср Чт Пт Сб'),
-      monthNames:      $w('Январь Февраль Март Апрель Май Июнь Июль Август Сентябрь Октябрь Ноябрь Декабрь'),
-      monthNamesShort: $w('Янв Фев Мар Апр Май Июнь Июль Авг Сен Окт Нов Дек')
-    };
-//    new Calendar({showTime: false, i18n:rus, format:"%d.%m.%Y"}).assignTo('id_start');
-    new Calendar({showTime: false, i18n:rus, format:"%d.%m.%Y"}).assignTo('id_end');
-</script>{% endcomment %}
 <script>
     $(function() {
         $.datepicker.setDefaults( $.datepicker.regional[ "ru" ]);
         $( "#id_start" ).datepicker( );
         $( "#id_end" ).datepicker( );
     });
+    $('#next').click(
+            function() {
+                var val = $('#id_page').val();
+                if (val == "")
+                    val = 1;
+                $('#id_page').val(parseInt(val) + 1);
+                $('#searchform form').submit();
+            }
+    );
+    $('#prev').click(
+            function() {
+                $('#id_page').val(parseInt($('#id_page').val()) - 1);
+                $('#searchform form').submit();
+            }
+    );
 </script>
