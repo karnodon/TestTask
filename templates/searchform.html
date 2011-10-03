@@ -14,31 +14,37 @@
         {% endfor %}
         <ul>
             {% for field in form.visible_fields %}
-                <li {% if field.errors %}class="field_error"{% endif %}>
-                    {{ field.label_tag }}
-                    {{ field }}
-                </li>
+                {% if field.name != form.pagesize.name %}
+                    <li {% if field.errors %}class="field_error"{% endif %}>
+                        {{ field.label_tag }}
+                        {{ field }}
+                    </li>
+                {% endif %}
             {% endfor %}
             <li>
                 <input type="submit" title="Найти" value="Найти">
             </li>
         </ul>
-        {% if stats.paginator and stats.paginator.num_pages > 1%}
-            {{ form.page }}
-            <div class="pagination">
+
+        {{ form.page }}
+        <div class="pagination">
+            {% if stats.paginator and stats.paginator.num_pages > 1%}
                 <span class="step-links">
                     {% if stats.has_previous %}
-                        <a id="prev" href="#">Назад</a>
+                        <a id="prev" href="#"><<</a>
                     {% endif %}
                     <span class="current">
-                    Стр. {{ stats.number }} из {{ stats.paginator.num_pages }}.
-                </span>
+                        {% for pn in stats.paginator.page_range %}
+                            <a href="#" class="{% if pn == stats.number%}active{% endif %} pagelink">&nbsp;{{ pn }}&nbsp;</a>
+                        {% endfor %}
+                    </span>
                     {% if stats.has_next %}
-                        <a id="next" href="#">Вперед</a>
+                        <a id="next" href="#">>></a>
                     {% endif %}
                 </span>
-            </div>
-        {% endif %}
+            {% endif %}
+            {{ form.pagesize }}
+        </div>
     </form>
 </div>
 <script>
@@ -62,4 +68,10 @@
                 $('#searchform form').submit();
             }
     );
+    $('.pagelink').click(
+            function() {
+                $('#id_page').val(parseInt($(this).text()));
+                $('#searchform form').submit();
+            }
+    )
 </script>

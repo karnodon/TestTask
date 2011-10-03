@@ -139,7 +139,7 @@ def add_answer(request, taskId):
         return redirect("/chapter/")
 
 def get_test_session_data(testSession):
-    answers = testSession.answer_set.order_by('position')
+    answers = testSession.answer_set.all()
     aggregate = []
     testSession.correct = 0
     for a in answers:
@@ -210,6 +210,7 @@ def students(request):
         start = None
         end = None
         page = None
+        pagesize = 10
         if request.method == 'GET':
             form = SearchTest(request.GET)
             if form.is_valid():
@@ -221,6 +222,14 @@ def students(request):
                 start = form.cleaned_data['start']
                 end = form.cleaned_data['end']
                 page = form.cleaned_data['page']
+                try:
+                    pagesize = int(form.cleaned_data['pagesize'])
+                except ValueError:
+                    if form.cleaned_data['pagesize'] ==u'':
+                        pagesize = 10
+                    else:
+                        pagesize = 100000
+                        page = 1
         else:
             form = SearchTest()
         ts = TestSession.objects.filter(student__in=students)
@@ -230,17 +239,16 @@ def students(request):
             ts = ts.filter(testDate__lte = end)
         if ts.count() > 0:
             stats = list(ts.order_by('student','testDate'))
-            paginator = Paginator(stats, 10)
-
+            paginator = Paginator(stats, pagesize)
             if page is None:
                 page = ""
             try:
                 stats = paginator.page(page)
             except PageNotAnInteger:
-                # If page is not an integer, deliver first page.
+                    # If page is not an integer, deliver first page.
                 stats  = paginator.page(1)
             except EmptyPage:
-                # If page is out of range (e.g. 9999), deliver last page of results.
+                 # If page is out of range (e.g. 9999), deliver last page of results.
                 stats = paginator.page(paginator.num_pages)
         params = get_params(request, {'stats' : stats, 'form' : form})
         return render_to_response("students.html", params, context_instance=RequestContext(request))

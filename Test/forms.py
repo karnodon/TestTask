@@ -13,6 +13,9 @@ class SearchTest(forms.Form):
                           required=False, label="", input_formats= ["%d.%m.%Y"], error_messages= em)
     page = forms.IntegerField(required=False, widget=forms.widgets.HiddenInput())
 
+    pagesize = forms.ChoiceField(widget=forms.Select(), choices=(('10', '10'),('25', '25'),('50', '50'), (u'Все', u'Все')),
+                                 initial="10", required=False)
+
     def clean(self):
         cleaned_data = self.cleaned_data
         s = cleaned_data.get("start")

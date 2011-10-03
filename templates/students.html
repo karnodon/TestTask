@@ -4,8 +4,11 @@
 {% endblock %}
 {% block links %}
     <link type="text/css" href="/static/css/cupertino/jquery-ui.css" rel="stylesheet"/>
+    <link type="text/css" href="/static/css/colorbox.css" rel="stylesheet"/>
     <script type="text/javascript" src="/static/scripts/jquery-ui.js"></script>
     <script type="text/javascript" src="/static/scripts/jquery.ui.datepicker-ru.js"></script>
+
+    <script type="text/javascript" src="/static/scripts/jquery.colorbox.js"></script>
 {% endblock %}
 {% block main %}
     <H2>Статистика по студентам</H2>
@@ -21,7 +24,7 @@
         <tbody>
         {% for test in stats.object_list %}
             <tr class="test">
-                <td class="student"><img src="/static/images/student_icon.png" alt="Учащийся"> {{ test.student.first_name}}&nbsp;{{ test.student.last_name }}<br><a href="/statistics/chart/chapter/{{ 1 }}/student/{{ student.id }}/">Диаграмма</a></td>
+                <td class="student"><img src="/static/images/student_icon.png" alt="Учащийся"> {{ test.student.first_name}}&nbsp;{{ test.student.last_name }}<br><a class="diagram" href="/statistics/chart/chapter/{{ 1 }}/student/{{ test.student.id }}/">Диаграмма</a></td>
                 <td class="{% if test.final %}finaltest{% endif %}{% if test.total > test.correct %} testIncorrect{% else %} testCorrect{% endif %}">
                     <a href="/statistics/test/{{ test.id }}/">{{ test.testDate|date:"j.m.Y" }}
                     </a>
@@ -34,10 +37,12 @@
                     {% endif %}
                 </td>
             </tr>
-        {% endfor %}
-        {% if stats|length == 0 %}
+        {% empty %}
             <tr><td colspan="3">По выбранным параметрам не удалось найти тестов</td></tr>
-        {% endif %}
+        {% endfor %}
         </tbody>
     </table>
+    <script type="text/javascript">
+       $(".diagram").colorbox({width:"820", height:"420", iframe:true});
+    </script>
 {% endblock %}

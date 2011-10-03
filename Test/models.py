@@ -38,6 +38,8 @@ class Option (models.Model):
     task = models.ForeignKey(Task)
     def __unicode__(self):
         return self.text
+    class Meta:
+        ordering = ['position']
 
 class TestSession (models.Model):
     testDate = models.DateField()
@@ -52,3 +54,5 @@ class Answer (models.Model):
     selected = models.ManyToManyField(Option)
     value = models.CharField(max_length=30, blank=True)
     position = models.IntegerField()
+    class Meta:
+        ordering = ['position']

@@ -315,3 +315,21 @@ th.task {
 div.ui-datepicker{
  font-size:10px;
 }
+.step-links a {
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.step-links a:hover {
+    text-decoration: underline;
+    font-size: 12px;
+    font-weight: bolder;
+}
+.active {
+    color: rgb(0, 51, 153);
+}
+
+.pagination {
+    margin-top: 5px;
+    width: 540px;
+}
