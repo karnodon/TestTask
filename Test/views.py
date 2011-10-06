@@ -232,7 +232,7 @@ def students(request):
                         page = 1
         else:
             form = SearchTest()
-        ts = TestSession.objects.filter(student__in=students)
+        ts = TestSession.objects.filter(student__in=students, answer__isnull=False).distinct()
         if start:
             ts = ts.filter(testDate__gte = start)
         if end:
