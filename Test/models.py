@@ -16,6 +16,9 @@ class Chapter (models.Model):
     description = models.CharField(max_length=100)
     active = models.BooleanField(default=False)
     timeLimit = models.IntegerField(default=0)
+    easy = models.IntegerField(blank=True)
+    medium = models.IntegerField(blank=True)
+    hard = models.IntegerField(blank=True)
     def __unicode__(self):
         return self.shortName
 
@@ -24,6 +27,7 @@ class Task (models.Model):
     description = models.CharField(max_length=400)
     position = models.IntegerField()
     chapter = models.ForeignKey(Chapter)
+    complexity = models.IntegerField()
     theoryLink = models.CharField(blank=True, max_length=400)
     def __unicode__(self):
         return  self.title
@@ -49,6 +53,10 @@ class TestSession (models.Model):
     total = models.IntegerField(blank=True)
     final = models.BooleanField()
 
+class TestSequence (models.Model):
+    task = models.ForeignKey(Task)
+    position = models.IntegerField()
+    test_session = models.ForeignKey(TestSession)
 class Answer (models.Model):
     testSession = models.ForeignKey(TestSession)
     selected = models.ManyToManyField(Option)

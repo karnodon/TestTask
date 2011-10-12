@@ -3,6 +3,8 @@
 from cStringIO import StringIO
 from datetime import datetime
 #import logging
+from itertools import chain
+import random
 import time
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group, User
@@ -17,7 +19,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 from Test.forms import SearchTest
 
-from Test.models import Chapter, Task, Option, TestSession
+from Test.models import Chapter, Task, Option, TestSession, TestSequence
 import settings
 #l = logging.getLogger('django.db.backends')
 #l.setLevel(logging.DEBUG)
@@ -59,7 +61,6 @@ def chapters(request, chapterId=None, final = None):
                         return test_detail(request, final_test.id)
             except TestSession.DoesNotExist:
                 pass
-        firstTask = Task.objects.get(chapter = chapterId, position = 1)
         testSession = TestSession()
         testSession.testDate = datetime.now()
         testSession.duration = 0
@@ -67,51 +68,73 @@ def chapters(request, chapterId=None, final = None):
         testSession.final = request.session.get('final', None)
         testSession.save()
         request.session['test'] = testSession
-        return task(request, firstTask.id)
+        #generate random list of tasks
+        chapter = Chapter.objects.get(id = chapterId)
+        easy = Task.objects.filter(chapter = chapterId, complexity = 1).order_by('?')[:chapter.easy]
+        medium = Task.objects.filter(chapter = chapterId, complexity = 2).order_by('?')[:chapter.medium]
+        hard = Task.objects.filter(chapter = chapterId, complexity = 3).order_by('?')[:chapter.hard]
+        tasks = list(chain(easy, medium, hard))
+        random.shuffle(tasks)
+        k = 0
+        for t in tasks:
+            elem = TestSequence()
+            elem.position = k
+            elem.task = t
+            elem.test_session = testSession
+            elem.save()
+            k += 1
+        return task(request, 1)
     else:
         params = get_params(request)
         if chapterId:
             params['chapterId'] = chapterId
         return render_to_response("chapter.html", params, context_instance=RequestContext(request))
 @login_required
-def task(request, taskId):
+def task(request, task_num):
+    task_num  = int(task_num)
     isTeacher =  bool(request.user.groups.filter(name='teacher'))
     if isTeacher:
         return redirect("/chapter/")
-    task = Task.objects.get(id = taskId)
+    testSession = request.session.get('test')
+    testSession.duration = (datetime.now() - testSession.testDate).seconds
+    testSession.save()
+    test_sequence = TestSequence.objects.filter(test_session = testSession).order_by('position')
+    task_list = []
     type = 0
+    for ts in test_sequence:
+        task_list.append(ts.task)
+    task = test_sequence[task_num - 1].task
     options = task.option_set.all()
     for opt in options:
         if opt.correct:
             type += 1
         if opt.value:
             type = -1
-    testSession = request.session.get('test')
-    testSession.duration = (datetime.now() - testSession.testDate).seconds
-    testSession.save()
-    taskList = Task.objects.filter(chapter = task.chapter.id)
+
     return render_to_response("task.html", {'task': task, 'options_list' : options,
                                             'type': type,
-                                            'list' : taskList,
+                                            'list' : task_list,
+                                            'next' : task_num + 1,
                                             'tictac' : testSession.duration,
                                             'limit' : task.chapter.timeLimit,
                                             'chapter_list' : Chapter.objects.filter(active = True)},
                               context_instance=RequestContext(request))
 @login_required
-def add_answer(request, taskId):
+def add_answer(request, task_num):
+    task_num = int(task_num)
     try:
-        task = Task.objects.get(id = taskId)#current task
         if request.method == 'POST':
             try:
                 testSession = request.session['test']
             except KeyError :
                 testSession = None
+            tsStep = TestSequence.objects.filter(test_session = testSession, position = task_num - 2)[0]#current task
 
             chosen = request.POST.getlist('option')
             answers = testSession.answer_set.all()
             answer  = None
             for ans in answers:
-                if ans.selected.all()[0].task == task:
+                if ans.selected.all()[0].task == tsStep.task:
                     answer = ans
             if answer is None:
                 answer = testSession.answer_set.create()
@@ -120,21 +143,19 @@ def add_answer(request, taskId):
             for optId in chosen:
                 try:
                     opt = Option.objects.get(id = int(optId))
-                    if opt.task != task or (opt.task == task and opt.value != '' and opt.value is not None):#a chance that entered value is ID of another option
+                    if opt.task != tsStep.task or (opt.task == tsStep.task and opt.value != '' and opt.value is not None):#a chance that entered value is ID of another option
                         raise ValueError
+                    if opt.value is not None:
+                        answer.selected.add(opt)#value from form is not ID but entered data
                 except (Option.DoesNotExist, ValueError):
                     answer.value = optId
-                opt = task.option_set.all()[0]#value from form is not ID but entered data
-                if opt.value is not None:
-                    answer.selected.add(opt)
-            answer.position = task.position
+            answer.position = task_num
             answer.save()
-        try:
-            nextTask = Task.objects.get(chapter = task.chapter, position = task.position + 1)
-            nextTaskId = nextTask.id
-        except Task.DoesNotExist:
-            nextTaskId = 0
-        return redirect('/chapter/{0:d}/task/{1:d}/'.format(task.chapter_id, nextTaskId), context_instance=RequestContext(request))
+            if TestSequence.objects.filter(test_session = testSession).count() < task_num:
+                task_num = 0
+            return redirect('/chapter/{0:d}/task/{1:d}/'.format(tsStep.task.chapter_id, task_num), context_instance=RequestContext(request))
+        else:
+            return redirect("/chapter/")
     except Task.DoesNotExist:
         return redirect("/chapter/")
 
@@ -300,7 +321,8 @@ def tests(request):
 
 @login_required
 def theory_reader(request):
-    return render_to_response(request.get_full_path()[1:])#cut off leading slash
+    return render_to_response(request.get_full_path()[1:], get_params(request),
+                              context_instance=RequestContext(request))#cut off leading slash
 
 def tests_to_pdf(request, chapterId = None):
     registerFont(TTFont('Calibri', 'Calibri.ttf'))

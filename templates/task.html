@@ -9,7 +9,7 @@
             <td id="tictacdisplay" align="left" width="150" style="font-size: smaller;"></td>
             <td align="left"><table align="left" cellspacing ="5" cellpadding="0"><tr>
                 {% for item in list %}
-                    <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ item.id }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ item.id }}">
+                    <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ forloop.counter }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ forloop.counter }}">
                         {% if task == item %}
                             <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
                         {% else %}
@@ -25,7 +25,7 @@
 {% block main %}
     <p>{{ task.description|safe }}</p>
     <p>Варианты ответов</p>
-    <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ task.id }}/answer/">
+    <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/">
         {% for item in options_list %}
             <label title="{{item}}">
                 {% if type == -1 %}
@@ -39,7 +39,7 @@
                 {% endif %}
             </label><br/>
         {% endfor %}
-        <input type="submit" value="{% if task.position == list|length %}Закончить{% else %}Следующий{% endif %}" style="background: url('/static/images/bg_task.png') repeat-x;" onclick="return validateAnswer()">
+        <input type="submit" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}" style="background: url('/static/images/bg_task.png') repeat-x;" onclick="return validateAnswer()">
         <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
         <input type="hidden" name="limit" id="limit" value="{{ limit }}">
     </form>
