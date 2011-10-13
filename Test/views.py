@@ -136,6 +136,7 @@ def add_answer(request, task_num):
             for ans in answers:
                 if ans.selected.all()[0].task == tsStep.task:
                     answer = ans
+                    break
             if answer is None:
                 answer = testSession.answer_set.create()
             else:
@@ -149,6 +150,7 @@ def add_answer(request, task_num):
                         answer.selected.add(opt)#value from form is not ID but entered data
                 except (Option.DoesNotExist, ValueError):
                     answer.value = optId
+                    answer.selected.add(tsStep.task.option_set.all()[0])
             answer.position = task_num
             answer.save()
             if TestSequence.objects.filter(test_session = testSession).count() < task_num:

@@ -11,9 +11,9 @@
                 {% for item in list %}
                     <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ forloop.counter }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ forloop.counter }}">
                         {% if task == item %}
-                            <span style="font-size:x-large; font-weight: bold;">{{ item.position }}</span>
+                            <span style="font-size:x-large; font-weight: bold;">{{ forloop.counter}}</span>
                         {% else %}
-                            {{ item.position }}
+                            {{ forloop.counter }}
                         {% endif %}
                     </a></td>
                 {% endfor %}
