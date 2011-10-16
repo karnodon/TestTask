@@ -1,5 +1,12 @@
 {% extends "base.html" %}
-{% block links %}<script type="text/javascript" src="/static/scripts/task.js"></script>{% endblock %}
+{% block links %}
+    <script type="text/javascript" src="/static/scripts/task.js"></script>
+    <link type="text/css" href="/static/css/cupertino/jquery-ui.css" rel="stylesheet"/>
+    <link type="text/css" href="/static/css/colorbox.css" rel="stylesheet"/>
+    <script type="text/javascript" src="/static/scripts/jquery.ui.datepicker-ru.js"></script>
+    <script type="text/javascript" src="/static/scripts/jquery.colorbox.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+{% endblock %}
 {% block title %}{{ task.chapter.shortName }} {% if task.final %}ЗАЧЕТ {% endif %} {% endblock %}
 {% block loader %}timedCount();{% endblock %}
 {% block header %}
@@ -20,12 +27,12 @@
             </tr></table></td>
         </tr>
     </table>
-    <h2>{{ task.title }}:</h2>
+    <h2>Задание {{ next|add:-1 }}:</h2>
 {% endblock %}
 {% block main %}
     <p>{{ task.description|safe }}</p>
-    <p>Варианты ответов</p>
-    <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/">
+    <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/" class="options">
+        <p>Варианты ответов</p>
         {% for item in options_list %}
             <label title="{{item}}">
                 {% if type == -1 %}
@@ -39,8 +46,13 @@
                 {% endif %}
             </label><br/>
         {% endfor %}
-        <input type="submit" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}" style="background: url('/static/images/bg_task.png') repeat-x;" onclick="return validateAnswer()">
+        <input type="submit" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}" style="margin-left: 40%" onclick="return validateAnswer()">
         <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
         <input type="hidden" name="limit" id="limit" value="{{ limit }}">
     </form>
+    <script type="text/javascript">
+        $(function() {
+            $( "input:submit" ).button();
+        });
+    </script>
 {% endblock %}

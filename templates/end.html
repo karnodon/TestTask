@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-    {% block title %}{% if teacher %}Результаты{% else %}Конец{% endif %} {% endblock %}
+{% block title %}{% if teacher %}Результаты{% else %}Конец{% endif %} {% endblock %}
 {% block menu %}
     {% if teacher %}
         » <a href="/statistics/students/">Статистика по студентам</a> » Результат
@@ -7,7 +7,7 @@
 {% endblock %}
 {% block main %}
     {% if teacher %}
-        <p>Результаты тестирования {{ session.student }} по разделу "{{ chapter }}"</p>
+        <p>Результаты тестирования {{ session.student.first_name }} {{ session.student.last_name }} по разделу "{{ chapter }}"</p>
     {% else %}
         <p>Тестирование по разделу {{ chapter }} завершено!</p>
     {% endif %}
@@ -19,35 +19,37 @@
         {% endif %} правильно на {{ session.correct }} из {{ session.total }} вопросов за {{ time }}
     </p>
     {% if answers %}
-        <table>
+        <table width="100%">
             {% for answer in answers %}
                 <tr>
                     <td>
-                            <div class="task first">
-                                {% if answer.actual|length == 0 %}
-                                    <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
-                                {% else %}
-                                    <img align="middle" height="32" width="32" src="/static/images/error.png">
-                                {% endif %} {{ answer.task }} {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
-                            </div>
-                            <div class="task correct   {% if answer.actual|length == 0 %}last{% endif %}">
+                        <div class="task first">
+                            {% if answer.actual|length == 0 %}
+                                <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
+                            {% else %}
+                                <img align="middle" height="32" width="32" src="/static/images/error.png">
+                            {% endif %} {{ answer.task|safe }} {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
+                        </div>
+                        {% if session.final or teacher or answer.actual|length == 0%}
+                            <div class="task correct {% if answer.actual|length == 0 %}last{% endif %}">
                                 Правильно
-                                    <ul style="margin-bottom: 0;">
+                                <ul>
                                     {% for item in answer.correct %}
-                                        <li>{{ item }}</li>
+                                        <li>{{ item|safe }}</li>
                                     {% endfor %}
-                                    </ul>
+                                </ul>
                             </div>
-                            {% if answer.actual|length > 0 %}
-                            <div  class="incorrect task last">
+                        {% endif %}
+                        {% if answer.actual|length > 0 %}
+                            <div class="incorrect task last">
                                 Неправильно
-                                    <ul >
+                                <ul >
                                     {% for item in answer.actual %}
-                                        <li>{{ item }}</li>
+                                        <li>{{ item|safe }}</li>
                                     {% endfor %}
-                                    </ul>
+                                </ul>
                             </div>
-                            {% endif %}
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

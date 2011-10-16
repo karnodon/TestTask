@@ -35,7 +35,7 @@ class Task (models.Model):
         ordering = ['position']
 
 class Option (models.Model):
-    text = models.CharField(max_length=30)
+    text = models.CharField(max_length=80)
     value = models.CharField(max_length=30, blank=True)
     position = models.IntegerField()
     correct = models.BooleanField()

@@ -186,7 +186,7 @@ def get_test_session_data(testSession):
                     actualTexts.append(o.text)
             else:
                 testSession.correct += 1
-        aggregate.append(Summary(taskText=task.title,
+        aggregate.append(Summary(taskText=task.description,
                                  correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
     testSession.total = len(aggregate)
     testSession.save()
