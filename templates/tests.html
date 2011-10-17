@@ -42,9 +42,9 @@
                     {% endfor %}
                     <td align="center">{{ stat.0.correct }}</td>
                 </tr>
-            {% empty %}
-                <tr><td colspan="4">По выбранным параметрам не удалось найти тестов</td></tr>
             {% endfor %}
+        {% empty %}
+            <tr><td colspan="4">По выбранным параметрам не удалось найти тестов</td></tr>
         {%  endfor %}
         </tbody>
     </table>
