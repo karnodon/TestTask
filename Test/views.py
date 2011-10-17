@@ -65,7 +65,7 @@ def chapters(request, chapterId=None, final = None):
         testSession.testDate = datetime.now()
         testSession.duration = 0
         testSession.student = request.user
-        testSession.final = request.session.get('final', None)
+        testSession.final = request.session.get('final', False)
         testSession.save()
         request.session['test'] = testSession
         #generate random list of tasks
