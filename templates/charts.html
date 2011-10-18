@@ -24,9 +24,9 @@
                 ticks: [{% for bar in stats %}[{{ forloop.counter0 }}, "{{ bar.0|date:"j.m.Y" }}"]{% if not forloop.last %},{% endif %}{% endfor %}]
             },
             yaxis: {
-                ticks: 4,
+                ticks: 12,
                 min: 0,
-                max: 4
+                max: 12
             },
             grid: {
                 backgroundColor: { colors: ["#fff", "#eee"] }

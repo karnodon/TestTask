@@ -370,7 +370,7 @@ def test_chart(request, chapterId = None, studentId = None):
         tests = TestSession.objects.filter(final = False, student = std).order_by('testDate')
         for ft in tests:
             if chapter_id_for_test_session(ft) == int(chapterId):
-                stats.append([ft.testDate, ft.correct])
+                stats.append([ft.testDate, 0 if ft.correct is None else ft.correct])
         params = get_params(request,
                 {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapterId),
                  'stats' : stats})
