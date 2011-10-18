@@ -55,10 +55,9 @@ def chapters(request, chapterId=None, final = None):
         if final:
             request.session['final'] = final
             try:
-                final_tests = TestSession.objects.filter(student = request.user, final = True)
-                for final_test in final_tests:
-                    if chapter_id_for_test_session(final_test) == int(chapterId):
-                        return test_detail(request, final_test.id)
+                return test_detail(request, (
+                TestSession.objects.get(student=request.user, final=True,
+                                        answer__selected__task__chapter=chapterId)).id)
             except TestSession.DoesNotExist:
                 pass
         testSession = TestSession()
@@ -111,7 +110,7 @@ def task(request, task_num):
         if opt.value:
             type = -1
 
-    return render_to_response("task.html", {'task': task, 'options_list' : options,
+    return render_to_response("task.html", {'task': task,
                                             'type': type,
                                             'list' : task_list,
                                             'next' : task_num + 1,
@@ -170,6 +169,7 @@ def get_test_session_data(testSession):
         correctTexts = []
         actualTexts = []
         if len(opts) > 0:
+
             task = opts[0].task
             taskOpts = task.option_set.filter(correct=True)
             for opt in taskOpts:
@@ -326,7 +326,7 @@ def theory_reader(request):
     return render_to_response(request.get_full_path()[1:], get_params(request),
                               context_instance=RequestContext(request))#cut off leading slash
 
-def tests_to_pdf(request, chapterId = None):
+def tests_to_pdf(request, chapter_id = None):
     registerFont(TTFont('Calibri', 'Calibri.ttf'))
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(mimetype='application/pdf')
@@ -343,16 +343,15 @@ def tests_to_pdf(request, chapterId = None):
     line = 25
     k = 0
     p.drawString(40, 820, u"Учащийся")
-    finalTests = TestSession.objects.filter(final = True).order_by('student', 'testDate')
+    finalTests = TestSession.objects.filter(final = True, answer__selected__task__chapter = chapter_id).order_by('student', 'testDate')
     for ft in finalTests:
-        if chapter_id_for_test_session(ft) == chapterId:
-            testAggregate = get_test_session_data(ft)
-            p.drawString(40, 800 - line * k, ft.student.first_name + " " + ft.student.last_name)
-            i = 0
-            for ta in testAggregate:
-                p.drawString(140 + i * 20, 800 - line * k, '+' if  not len(ta.actual) else '-')
-                i += 1
-            k += 1
+        testAggregate = get_test_session_data(ft)
+        p.drawString(40, 800 - line * k, ft.student.first_name + " " + ft.student.last_name)
+        i = 0
+        for ta in testAggregate:
+            p.drawString(140 + i * 20, 800 - line * k, '+' if  not len(ta.actual) else '-')
+            i += 1
+        k += 1
             # Close the PDF object cleanly.
     p.showPage()
     p.save()
@@ -363,17 +362,23 @@ def tests_to_pdf(request, chapterId = None):
     response.write(pdf)
     return response
 
-def test_chart(request, chapterId = None, studentId = None):
+def test_chart(request, chapter_id = None, studentId = None):
     try:
         stats = []
         std = User.objects.get(id=int(studentId))
-        tests = TestSession.objects.filter(final = False, student = std).order_by('testDate')
+        ts = time.time()
+        tests = TestSession.objects.filter(final = False, student = std, answer__selected__task__chapter = chapter_id).distinct().order_by('testDate')
+        max = 0
         for ft in tests:
-            if chapter_id_for_test_session(ft) == int(chapterId):
-                stats.append([ft.testDate, 0 if ft.correct is None else ft.correct])
+            correct = 0 if ft.correct is None else ft.correct
+            stats.append([ft.testDate, correct])
+            if correct > max:
+                max = correct
+        te = time.time()
+        print '%d'% (te - ts)
         params = get_params(request,
-                {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapterId),
-                 'stats' : stats})
+                {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapter_id),
+                 'stats' : stats, 'max' : max + 1})
         return render_to_response("charts.html", params, context_instance=RequestContext(request))
     except (ValueError, User.DoesNotExist, Chapter.DoesNotExist):
         return redirect("/chapter/")

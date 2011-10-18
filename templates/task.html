@@ -33,7 +33,7 @@
     <p>{{ task.description|safe }}</p>
     <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/" class="options">
         <p>Варианты ответов</p>
-        {% for item in options_list %}
+        {% for item in task.option_set.all %}
             <label title="{{item}}">
                 {% if type == -1 %}
                     <input type="text" value="" name="option"/>
