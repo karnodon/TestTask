@@ -43,6 +43,19 @@
         </tbody>
     </table>
     <script type="text/javascript">
-       $(".diagram").colorbox({width:"820", height:"420", iframe:true});
+        $(".diagram").colorbox({width:"820", height:"420", iframe:true});
+        var txts = new Array();
+        $('.student').each(function() {
+            if (txts.indexOf($(this).text()) < 0)
+                txts.push($(this).text())
+        });
+        for (var txt in txts) {
+            var $s = $('.student:contains('+txts[txt]+')');
+            var cnt = $s.length;
+            $s.hide();
+            var $sf = $('.student:contains('+txts[txt]+'):first');
+            $sf.show();
+            $sf.attr('rowspan', cnt);
+        }
     </script>
 {% endblock %}
