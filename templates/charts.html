@@ -5,23 +5,19 @@
     <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="/static/scripts/excanvas.min.js"></script><![endif]-->
     <script language="javascript" type="text/javascript" src="/static/scripts/jquery.flot.js"></script>
 </head>
-<body style="height: 300px">
+<body style="height: 30px">
 <h2>Учащийся: {{ student.first_name }}&nbsp;{{ student.last_name }}, Раздел: {{ chapter.shortName }}</h2>
 <div>&nbsp;</div>
 {#    <img src="/statistics/chart/chapter/{{ 1 }}/student/{{ student.id }}/draw/"/>#}
 <div id="placeholder" style="width:720px;height:300px;margin-left: 16px;"></div>
 <script type="text/javascript">
     $(function () {
-        var data = [
-            {% for bar in stats %}
-                ['{{ forloop.counter0 }}', {{ bar.1 }}]{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ];
+        var data = [{% for bar in stats %}['{{ forloop.counter0 }}', {{ bar.1 }}]{% if not forloop.last %},{% endif %}{% endfor %}];
         $.plot($("#placeholder"), [
             { data: data, lines: { show: true }, points:{ show: true }}
         ], {
             xaxis: {
-                ticks: [{% for bar in stats %}[{{ forloop.counter0 }}, "{{ bar.0|date:"j.m.Y" }}"]{% if not forloop.last %},{% endif %}{% endfor %}]
+                ticks: [{% for bar in stats %}[{{ forloop.counter0 }},{% if forloop.counter0|divisibleby:2 %}"{{ bar.0|date:"j.m.Y" }}"{% else %}""{% endif %}]{% if not forloop.last %},{% endif %}{% endfor %}]
             },
             yaxis: {
                 ticks: {{ max }},
