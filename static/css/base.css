@@ -295,7 +295,22 @@ html ul.topnav li ul.subnav li a:hover {
     display: inline;
 }
 
-.errormessage {
+#feedbackform form ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#feedbackform form ul li{
+    padding: 2px;
+}
+
+#feedbackform {
+    margin-top: 30px;
+    color: #3869FF;
+}
+
+#searchform form div.errormessage {
     background-color: red;
     color: white;
     display: block;
@@ -305,7 +320,20 @@ html ul.topnav li ul.subnav li a:hover {
     width: 540px;
 }
 
+#feedbackform form div.errormessage {
+    background-color: red;
+    color: white;
+    display: block;
+    font-size: 14px;
+    margin: 0 0 3px;
+    padding: 4px 5px;
+    width: 475px;
+}
+
 .field_error input {
+    border: 4px solid red;
+}
+.field_error textarea {
     border: 4px solid red;
 }
 
@@ -419,4 +447,9 @@ form.options {
     -moz-border-radius: 5px;
     border-radius: 5px;
     -webkit-border-radius: 5px;
+}
+
+#feedback_button {
+    margin-left: 110px;
+    text-align: center;
 }

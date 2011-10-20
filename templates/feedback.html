@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block links %}
+    <link type="text/css" href="/static/css/cupertino/jquery-ui.css" rel="stylesheet"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+{% endblock %}
+{% block main %}
+    <h2>Обратная связь</h2>
+    <div id="feedbackform">
+        {% if human %}
+            Спасибо за ваше сообщение. Ваше мнение очень важно для нас.<br>
+        {% endif %}
+        Введите текст сообщения и нажмите кнпоку "Отправить"
+        <form method="POST">
+            {% if form.non_field_errors %}
+                <div>
+                    {% for err in form.non_field_errors %}
+                        <div class="errormessage">{{ err }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% for field in form.visible_fields %}
+                {% for err in field.errors %}
+                    <div class="errormessage">{{ err }}</div>
+                {% endfor %}
+            {% endfor %}
+            <ul>
+                {% for field in form.visible_fields %}
+                    {% if field.name != form.pagesize.name %}
+                        <li {% if field.errors %}class="field_error"{% endif %}>
+                            <div style="width: 150px;">{{ field.label_tag }}</div>
+                            {{ field }}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                <li>
+                    <input type="submit" title="Отправить" value="Отправить" id="feedback_button">
+                </li>
+            </ul>
+        </form>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            $( "input:submit" ).button();
+        });
+    </script>
+{% endblock %}

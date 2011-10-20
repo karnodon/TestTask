@@ -98,7 +98,10 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'captcha',
     'TestTask.Test',
 )
+
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 
 SEND_EMAIL = False

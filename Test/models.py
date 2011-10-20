@@ -57,6 +57,7 @@ class TestSequence (models.Model):
     task = models.ForeignKey(Task)
     position = models.IntegerField()
     test_session = models.ForeignKey(TestSession)
+
 class Answer (models.Model):
     testSession = models.ForeignKey(TestSession)
     selected = models.ManyToManyField(Option)
@@ -64,3 +65,12 @@ class Answer (models.Model):
     position = models.IntegerField()
     class Meta:
         ordering = ['position']
+
+class Feedback (models.Model):
+    email = models.EmailField(blank=False)
+    message = models.CharField(blank=False, max_length=500)
+    post_date = models.DateTimeField(blank=False)
+    def __unicode__(self):
+        return self.post_date.strftime('%d %b %Y') + ' ' + self.email + ' ' + self.message
+    class Meta:
+        ordering = ['post_date']

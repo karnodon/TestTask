@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from Test.views import chapters, task, end, add_answer, students, test_detail, tests, tests_to_pdf, test_chart, theory_reader, bio
+from Test.views import chapters, task, end, add_answer, students, test_detail, tests, tests_to_pdf, test_chart, theory_reader, bio, feedback
 
 admin.autodiscover()
 urlpatterns = patterns('',
@@ -24,6 +24,7 @@ urlpatterns = patterns('',
                        (r'^statistics/test/([\d]*)/$', test_detail),
                        (r'^statistics/chart/chapter/([\d]*)/student/([\d]*)/$', test_chart),
                        (r'^bio/$', bio),
+                       (r'^feedback/$', feedback),
                        # Example:
                        # (r'^TestTask/', include('TestTask.foo.urls')),
 
@@ -35,3 +36,6 @@ urlpatterns = patterns('',
                        (r'^$', chapters),
                        )
 urlpatterns += staticfiles_urlpatterns()
+urlpatterns += patterns('',
+    url(r'^captcha/', include('captcha.urls')),
+)

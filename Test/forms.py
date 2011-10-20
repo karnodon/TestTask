@@ -1,5 +1,6 @@
 # coding=UTF-8
 from django import forms
+from captcha.fields import CaptchaField
 
 __author__ = 'Frostbite'
 class SearchTest(forms.Form):
@@ -25,3 +26,13 @@ class SearchTest(forms.Form):
             raise forms.ValidationError(u"Начальная дата не должна быть позже  конечной.")
         # Always return the full collection of cleaned data.
         return cleaned_data
+
+class FeedbackForm(forms.Form):
+    email = forms.EmailField(required=True, label=u'Электропочта',
+                             error_messages={"required": u"Введите адрес", "invalid": u"Неправильный формат адреса"},
+                             max_length=150,widget=forms.TextInput(attrs={'size':66}))
+    message = forms.CharField(required=True, label=u'Сообщение',
+                              error_messages={"required": u"Введите сообщение"},
+                              widget=forms.Textarea(attrs={'rows': 10, 'cols': 65}))
+    captcha = CaptchaField(required=True, label=u'Решите пример',
+                           error_messages={"required": u"Решите пример правильно", "invalid": u"Неправильный ответ"})

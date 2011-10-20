@@ -17,9 +17,9 @@ from django.template.context import RequestContext
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
-from Test.forms import SearchTest
+from Test.forms import SearchTest, FeedbackForm
 
-from Test.models import Chapter, Task, Option, TestSession, TestSequence
+from Test.models import Chapter, Task, Option, TestSession, TestSequence, Feedback
 import settings
 #l = logging.getLogger('django.db.backends')
 #l.setLevel(logging.DEBUG)
@@ -385,3 +385,23 @@ def test_chart(request, chapter_id = None, studentId = None):
 
 def bio(request):
     return render_to_response("bio.html", get_params(request), context_instance=RequestContext(request))
+
+def feedback(request):
+    human = False
+    if request.POST:
+        form = FeedbackForm(request.POST)
+        # Validate the form: the captcha field will automatically
+        # check the input
+        if form.is_valid():
+            human = True
+            msg = Feedback()
+            msg.email = form.cleaned_data['email']
+            msg.message = form.cleaned_data['message']
+            msg.post_date = datetime.now()
+            msg.save()
+            form = FeedbackForm()
+    else:
+        form = FeedbackForm()
+
+    params = get_params(request, {'form' : form, 'human' : human})
+    return render_to_response("feedback.html", params, context_instance=RequestContext(request))
