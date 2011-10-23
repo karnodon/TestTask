@@ -17,7 +17,7 @@
             { data: data, lines: { show: true }, points:{ show: true }}
         ], {
             xaxis: {
-                ticks: [{% for bar in stats %}[{{ forloop.counter0 }},{% if forloop.counter0|divisibleby:2 %}"{{ bar.0|date:"j.m.Y" }}"{% else %}""{% endif %}]{% if not forloop.last %},{% endif %}{% endfor %}]
+                ticks: [{% for bar in stats %}[{{ forloop.counter0 }},{% if forloop.counter0|divisibleby:sparserate %}"{{ bar.0|date:"j.m.Y" }}"{% else %}""{% endif %}]{% if not forloop.last %},{% endif %}{% endfor %}]
             },
             yaxis: {
                 ticks: {{ max }},

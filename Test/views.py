@@ -366,7 +366,6 @@ def test_chart(request, chapter_id = None, studentId = None):
     try:
         stats = []
         std = User.objects.get(id=int(studentId))
-        ts = time.time()
         tests = TestSession.objects.filter(final = False, student = std, answer__selected__task__chapter = chapter_id).distinct().order_by('testDate')
         max = 0
         for ft in tests:
@@ -374,11 +373,9 @@ def test_chart(request, chapter_id = None, studentId = None):
             stats.append([ft.testDate, correct])
             if correct > max:
                 max = correct
-        te = time.time()
-        print '%d'% (te - ts)
         params = get_params(request,
                 {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapter_id),
-                 'stats' : stats, 'max' : max + 1})
+                 'stats' : stats, 'max' : max + 1, 'sparserate' : len(stats)/8})
         return render_to_response("charts.html", params, context_instance=RequestContext(request))
     except (ValueError, User.DoesNotExist, Chapter.DoesNotExist):
         return redirect("/chapter/")
@@ -399,6 +396,9 @@ def feedback(request):
             msg.message = form.cleaned_data['message']
             msg.post_date = datetime.now()
             msg.save()
+            if settings.SEND_EMAIL:
+                send_mail(u"Сообщение через форму обратной связи (" + msg.post_date.strftime('jd.%m.%Y %H:%M:%S') + ")", msg.message,
+                      msg.email, [User.objects.get(username='irina').email])
             form = FeedbackForm()
     else:
         form = FeedbackForm()
