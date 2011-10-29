@@ -321,7 +321,6 @@ def tests(request):
     except ValueError:
         return redirect("/chapter/")
 
-@login_required
 def theory_reader(request):
     return render_to_response(request.get_full_path()[1:], get_params(request),
                               context_instance=RequestContext(request))#cut off leading slash
