@@ -80,7 +80,7 @@ td.task {
     background-clip: border-box;
     -moz-background-clip: border;
     -webkit-background-clip: border-box;
-    background-origin: border-box;
+    background-origin: border;
     -moz-background-origin: border;
     -webkit-background-origin: border-box;
 }
@@ -257,6 +257,7 @@ ul.topnav li ul.subnav li {
     border-bottom: 1px solid #59EBEB; /* --Create bevel effect--*/
     clear: both;
     width: 220px;
+    z-index: 10;
 }
 
 html ul.topnav li ul.subnav li a {
