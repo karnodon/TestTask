@@ -30,7 +30,7 @@ class SearchTest(forms.Form):
 class FeedbackForm(forms.Form):
     email = forms.EmailField(required=True, label=u'Электропочта',
                              error_messages={"required": u"Введите адрес", "invalid": u"Неправильный формат адреса"},
-                             max_length=150,widget=forms.TextInput(attrs={'size':66}))
+                             max_length=150,widget=forms.TextInput())
     message = forms.CharField(required=True, label=u'Сообщение',
                               error_messages={"required": u"Введите сообщение"},
                               widget=forms.Textarea(attrs={'rows': 10, 'cols': 65}))

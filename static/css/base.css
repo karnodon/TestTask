@@ -453,8 +453,13 @@ form.options {
     border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-
+#id_email {
+    width: 500px;
+}
+#id_message {
+    width: 500px;
+}
 #feedback_button {
-    margin-left: 110px;
+    margin-left: 150px;
     text-align: center;
 }

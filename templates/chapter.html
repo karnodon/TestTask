@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block title %} Разделы тестирования{% endblock %}
+{% block links %}
+    <style type="text/css">
+        html {
+            height: 650px;
+        }
+    </style>
+{% endblock %}
 {% block main %}
     <span class="mainText">
         {% if teacher or not user.is_authenticated %}
