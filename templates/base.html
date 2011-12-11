@@ -38,7 +38,7 @@
     <tr>
         <td valign="top" >
             {% block header %}
-                <H1><img src="/static/images/logo.jpg" alt="ГОУ 1748 ЦО Вертикаль" style="vertical-align: top;" align="left">Сайт учителя математики<br>Морозовой Ирины Сергеевны</H1>
+                <H1 id="main">{% comment %}<img src="/static/images/header_bg.jpg" alt="ГОУ 1748 ЦО Вертикаль" style="vertical-align: top;" align="left" height="90" width="250">{% endcomment %}Сайт учителя математики<br>Морозовой Ирины Сергеевны</H1>
                 <table width="100%" class="gradient"><tr>
                     <td align="left" class="headerText">Пользователь: <span class="headerText highlight">
                         {% if user.is_authenticated %}{{ user.username }}

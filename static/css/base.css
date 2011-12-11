@@ -26,10 +26,14 @@ h1 {
     vertical-align: top;
     text-align: center;
     color: #ffffff;
-    background: url("/static/images/bg_header.png") repeat-x;
+    background: url("/static/images/header_bg.jpg") repeat-x;
     height: 90px;
     margin-top: 0;
     margin-bottom: 0;
+}
+
+h1#main {
+    color: #ffffff;
 }
 
 h2 {
