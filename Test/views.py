@@ -14,6 +14,7 @@ from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template.context import RequestContext
+import reportlab
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
@@ -328,7 +329,8 @@ def theory_reader(request):
                               context_instance=RequestContext(request))#cut off leading slash
 
 def tests_to_pdf(request, chapter_id = None):
-    registerFont(TTFont('Calibri', 'Calibri.ttf'))
+    reportlab.rl_config.TTFSearchPath='/usr/share/fonts/truetype/ttf-dejavu'
+    registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/freefont/DejaVuSans.ttf'))
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(mimetype='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=tests.pdf'
@@ -338,7 +340,7 @@ def tests_to_pdf(request, chapter_id = None):
 
     # Create the PDF object, using the StringIO object as its "file."
     p = canvas.Canvas(buffer)
-    p.setFont('Calibri', 14)
+    p.setFont('DejaVuSans', 14)
     # Draw things on the PDF. Here's where the PDF generation happens.
     # See the ReportLab documentation for the full list of functionality.
     line = 25
