@@ -46,8 +46,8 @@ def chapter_id_for_test_session(test_session):
         return -1
 
 #@login_required
-def chapters(request, chapterId=None, final = None):
-    if chapterId and not (final is None):
+def chapters(request, chapter_id=None, final = None):
+    if chapter_id and not (final is None):
         try:
             del request.session['test']
         except KeyError:
@@ -57,7 +57,7 @@ def chapters(request, chapterId=None, final = None):
             try:
                 return test_detail(request, (
                 TestSession.objects.get(student=request.user, final=True,
-                                        answer__selected__task__chapter=chapterId)).id)
+                                        answer__selected__task__chapter=chapter_id)).id)
             except TestSession.DoesNotExist:
                 pass
         testSession = TestSession()
@@ -68,10 +68,10 @@ def chapters(request, chapterId=None, final = None):
         testSession.save()
         request.session['test'] = testSession
         #generate random list of tasks
-        chapter = Chapter.objects.get(id = chapterId)
-        easy = Task.objects.filter(chapter = chapterId, complexity = 1).order_by('?')[:chapter.easy]
-        medium = Task.objects.filter(chapter = chapterId, complexity = 2).order_by('?')[:chapter.medium]
-        hard = Task.objects.filter(chapter = chapterId, complexity = 3).order_by('?')[:chapter.hard]
+        chapter = Chapter.objects.get(id = chapter_id)
+        easy = Task.objects.filter(chapter = chapter_id, complexity = 1).order_by('?')[:chapter.easy]
+        medium = Task.objects.filter(chapter = chapter_id, complexity = 2).order_by('?')[:chapter.medium]
+        hard = Task.objects.filter(chapter = chapter_id, complexity = 3).order_by('?')[:chapter.hard]
         tasks = list(chain(easy, medium, hard))
         random.shuffle(tasks)
         k = 0
@@ -85,8 +85,8 @@ def chapters(request, chapterId=None, final = None):
         return task(request, 1)
     else:
         params = get_params(request)
-        if chapterId:
-            params['chapterId'] = chapterId
+        if chapter_id:
+            params['chapterId'] = chapter_id
         return render_to_response("chapter.html", params, context_instance=RequestContext(request))
 @login_required
 def task(request, task_num):
@@ -168,6 +168,7 @@ def get_test_session_data(testSession):
         opts = a.selected.all()
         correctTexts = []
         actualTexts = []
+        task = None
         if len(opts) > 0:
 
             task = opts[0].task
@@ -186,8 +187,9 @@ def get_test_session_data(testSession):
                     actualTexts.append(o.text)
             else:
                 testSession.correct += 1
-        aggregate.append(Summary(taskText=task.description,
-                                 correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
+        if task:
+            aggregate.append(Summary(taskText=task.description,
+                correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
     testSession.total = len(aggregate)
     testSession.save()
     return aggregate
