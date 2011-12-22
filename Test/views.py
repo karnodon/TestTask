@@ -330,7 +330,7 @@ def theory_reader(request):
 
 def tests_to_pdf(request, chapter_id = None):
     reportlab.rl_config.TTFSearchPath='/usr/share/fonts/truetype/ttf-dejavu'
-    registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/freefont/DejaVuSans.ttf'))
+    registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype//ttf-dejavu/DejaVuSans.ttf'))
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(mimetype='application/pdf')
     response['Content-Disposition'] = 'attachment; filename=tests.pdf'
