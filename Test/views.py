@@ -386,6 +386,10 @@ def test_chart(request, chapter_id = None, studentId = None):
 def bio(request):
     return render_to_response("bio.html", get_params(request), context_instance=RequestContext(request))
 
+def info(request, cls):
+    return render_to_response("theory/class" +  str(cls) + ".html", get_params(request), context_instance=RequestContext(request))
+
+
 def feedback(request):
     human = False
     if request.POST:
