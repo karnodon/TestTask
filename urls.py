@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     (r'^statistics/chart/chapter/([\d]*)/student/([\d]*)/$', test_chart),
     (r'^bio/$', bio),
     (r'^info/([\d]*)/$', info),
+    (r'^info/parents/([\d]*)/$', info, {'for_parents' : True}),
     (r'^feedback/$', feedback),
     # Example:
     # (r'^TestTask/', include('TestTask.foo.urls')),
