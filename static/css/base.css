@@ -284,6 +284,9 @@ html ul.topnav li ul.subnav li a:hover {
     font-size: x-large;
     font-weight: bolder;
 }
+.mainText ul{
+    margin-top: 40px;
+}
 
 #searchform {
     margin-top: 40px;
