@@ -56,9 +56,9 @@ def chapters(request, chapter_id=None, final = None):
         if final:
             request.session['final'] = final
             try:
-                return test_detail(request, (
-                TestSession.objects.get(student=request.user, final=True,
-                                        answer__selected__task__chapter=chapter_id)).id)
+                return test_detail(request,
+                    TestSession.objects.filter(student=request.user, final=True,
+                        answer__selected__task__chapter=chapter_id).distinct()[0].id)
             except TestSession.DoesNotExist:
                 pass
         testSession = TestSession()
