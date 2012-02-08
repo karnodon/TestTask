@@ -466,3 +466,7 @@ form.options {
     margin-left: 150px;
     text-align: center;
 }
+
+p.docref {
+    padding-left: 10px;
+}

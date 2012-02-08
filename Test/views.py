@@ -376,9 +376,13 @@ def test_chart(request, chapter_id = None, studentId = None):
             stats.append([ft.testDate, correct])
             if correct > max:
                 max = correct
+        if len(stats) < 8:
+            sparserate = 1
+        else:
+            sparserate = len(stats) / 8
         params = get_params(request,
                 {'student' : (User.objects.get(id=studentId)), 'chapter' : Chapter.objects.get(id = chapter_id),
-                 'stats' : stats, 'max' : max + 1, 'sparserate' : len(stats)/8})
+                 'stats' : stats, 'max' : max + 1, 'sparserate' : sparserate})
         return render_to_response("charts.html", params, context_instance=RequestContext(request))
     except (ValueError, User.DoesNotExist, Chapter.DoesNotExist):
         return redirect("/chapter/")

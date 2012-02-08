@@ -21,7 +21,11 @@
         <tbody>
         {% for test in stats.object_list %}
             <tr class="test">
-                <td class="student"><img src="/static/images/student_icon.png" alt="Учащийся"> {{ test.student.first_name}}&nbsp;{{ test.student.last_name }}<br><a class="diagram" href="/statistics/chart/chapter/{{ 1 }}/student/{{ test.student.id }}/">Диаграмма</a></td>
+                <td class="student"><img src="/static/images/student_icon.png" alt="Учащийся"> {{ test.student.first_name}}&nbsp;{{ test.student.last_name }}
+                    {% for chp in chapter_list %}
+                        <br><a class="diagram" href="/statistics/chart/chapter/{{ chp.id }}/student/{{ test.student.id }}/">{{ chp.shortName }}</a>
+                    {% endfor %}
+                </td>
                 <td class="{% if test.final %}finaltest{% endif %}{% if test.total > test.correct %} testIncorrect{% else %} testCorrect{% endif %}">
                     <a href="/statistics/test/{{ test.id }}/">{{ test.testDate|date:"j.m.Y" }}
                     </a>
@@ -46,11 +50,11 @@
             if (txts.indexOf($(this).text()) < 0)
                 txts.push($(this).text())
         });
-        for (var txt in txts) {
-            var $s = $('.student:contains('+txts[txt]+')');
+        for (var i =0; i < txts.length; i++) {
+            var $s = $('.student:contains('+txts[i]+')');
             var cnt = $s.length;
             $s.hide();
-            var $sf = $('.student:contains('+txts[txt]+'):first');
+            var $sf = $('.student:contains('+txts[i]+'):first');
             $sf.show();
             $sf.attr('rowspan', cnt);
         }

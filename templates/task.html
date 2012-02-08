@@ -30,7 +30,7 @@
 {% block main %}
     <p>{{ task.description|safe }}</p>
     <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/" class="options">
-        <p>Варианты ответов</p>
+        {% if task.option_set.all|length > 1 %}<p>Варианты ответов</p>{% else %}<p>Ответ</p>{% endif %}
         {% for item in task.option_set.all %}
             <label title="{{item}}">
                 {% if type == -1 %}
