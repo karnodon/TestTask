@@ -22,7 +22,7 @@
                 {% endif %}
             {% endfor %}
             <li>
-                <input type="submit" title="Найти" value="Найти">
+                <input type="submit" title="Найти" value="Найти" id="submit">
             </li>
         </ul>
 
@@ -52,7 +52,7 @@
         $.datepicker.setDefaults( $.datepicker.regional[ "ru" ]);
         $( "#id_start" ).datepicker( );
         $( "#id_end" ).datepicker( );
-        $( "input:submit" ).button();
+        $( "#submit" ).button();
     });
     $('#next').click(
             function() {
