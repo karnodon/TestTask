@@ -24,7 +24,7 @@ class Chapter (models.Model):
 
 class Task (models.Model):
     title = models.CharField(max_length=50)
-    description = models.CharField(max_length=400)
+    description = models.CharField(max_length=600)
     position = models.IntegerField()
     chapter = models.ForeignKey(Chapter)
     complexity = models.IntegerField()
