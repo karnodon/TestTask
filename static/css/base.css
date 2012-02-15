@@ -22,6 +22,13 @@ body {
     font: normal Arial, Helvetica, sans-serif;
 }
 
+p {
+    text-indent: 40px;
+    text-align: justify;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 h1 {
     vertical-align: top;
     text-align: center;
@@ -30,6 +37,10 @@ h1 {
     height: 90px;
     margin-top: 0;
     margin-bottom: 0;
+}
+
+h3 {
+    text-align: center;
 }
 
 h1#main {
