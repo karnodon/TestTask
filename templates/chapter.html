@@ -10,7 +10,8 @@
 {% block main %}
     <span class="mainText">
         {% if teacher or not user.is_authenticated %}
-            Математика - РУЛИТ!!!
+            <p style="margin-left: 400px;font-size: medium;">    Если учитель имеет только любовь к делу, он будет хороший учитель. Если учитель имеет только любовь к ученику, как отец, как мать, он будет лучше того учителя, который прочел все книги, но не имеет любви ни к делу, ни к ученикам. Если учитель соединяет в себе любовь к делу и к ученикам, он – совершенный учитель.
+            </p><p style="text-align: right;margin-left: 400px;font-size: medium;">Л.Н. Толстой</p>
             <img src="/static/images/main_bg.jpg" alt="">
         {% else %}
             {% if chapterId %}
