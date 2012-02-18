@@ -414,6 +414,8 @@ def info(request, cls, for_parents = False):
     return render_to_response("theory/" + ("p" if for_parents else "") + "class" + str(cls) + ".html",
         get_params(request), context_instance=RequestContext(request))
 
+def inquisitive(request):
+    return render_to_response("inquisitive.html", get_params(request), context_instance=RequestContext(request))
 
 def feedback(request):
     human = False
