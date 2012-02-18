@@ -25,12 +25,12 @@
                         <li {% if field.errors %}class="field_error"{% endif %}>
                             <div style="width: 150px;">{{ field.label_tag }}</div>
                             {{ field }}
+                        {% if forloop.last %}
+                            <input type="submit" title="Отправить" value="Отправить" id="feedback_button">
+                        {% endif %}
                         </li>
                     {% endif %}
                 {% endfor %}
-                <li>
-                    <input type="submit" title="Отправить" value="Отправить" id="feedback_button">
-                </li>
             </ul>
         </form>
     </div>

@@ -21,6 +21,9 @@
                             {{ forloop.counter }}
                         {% endif %}
                     </a></td>
+                    {% if forloop.counter|divisibleby:20  and list|length > 20 %}
+                        </tr><tr>
+                    {% endif %}
                 {% endfor %}
             </tr></table></td>
         </tr>
@@ -45,6 +48,7 @@
             </label><br/>
         {% endfor %}
         <input type="submit" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}" style="margin-left: 40%" onclick="return validateAnswer()">
+        <input type="submit" value="Сдаюсь" style="margin-left: 85%" name="giveup">
         <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
         <input type="hidden" name="limit" id="limit" value="{{ limit }}">
     </form>

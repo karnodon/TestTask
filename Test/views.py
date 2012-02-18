@@ -129,7 +129,8 @@ def add_answer(request, task_num):
             except KeyError :
                 testSession = None
             tsStep = TestSequence.objects.filter(test_session = testSession, position = task_num - 2)[0]#current task
-
+            if request.POST['giveup']:
+                return redirect('/chapter/{0:d}/task/0/'.format(tsStep.task.chapter_id), context_instance=RequestContext(request))
             chosen = request.POST.getlist('option')
             answers = testSession.answer_set.all()
             answer  = None
@@ -161,18 +162,25 @@ def add_answer(request, task_num):
     except Task.DoesNotExist:
         return redirect("/chapter/")
 
-def get_test_session_data(testSession):
-    answers = testSession.answer_set.all()
+def set_test_session_data(chapter, test_session):
+    summary, test_session.correct = get_test_session_summary(test_session, chapter)
+    test_session.total = len(summary)
+    test_session.save()
+    return summary
+
+def get_test_session_summary(test_session, chapter = None):
+    answers = test_session.answer_set.all()
+    correct = 0
     aggregate = []
-    testSession.correct = 0
+    answered_task_ids = []
     for a in answers:
         opts = a.selected.all()
         correctTexts = []
         actualTexts = []
         task = None
         if len(opts) > 0:
-
             task = opts[0].task
+            answered_task_ids.append(task.id)
             taskOpts = task.option_set.filter(correct=True)
             for opt in taskOpts:
                 if opt.value is None or opt.value == '':
@@ -187,13 +195,25 @@ def get_test_session_data(testSession):
                 for o in opts:
                     actualTexts.append(o.text)
             else:
-                testSession.correct += 1
+                correct += 1
         if task:
             aggregate.append(Summary(taskText=task.description,
                 correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
-    testSession.total = len(aggregate)
-    testSession.save()
-    return aggregate
+            chapter = task.chapter
+    if chapter.easy + chapter.medium + chapter.hard > len(aggregate):
+        #get unanswered tasks
+        skipped_tasks = Task.objects.filter(chapter__id=chapter.id).exclude(id__in=answered_task_ids)
+        for task in skipped_tasks:
+            taskOpts = task.option_set.filter(correct=True)
+            correctTexts = []
+            for opt in taskOpts:
+                if opt.value is None or opt.value == '':
+                    correctTexts.append(opt.text)
+                else:
+                    correctTexts.append(opt.value)
+            aggregate.append(Summary(taskText=task.description, correctText=correctTexts,
+                actualText=["Нет ответа"], link=task.theoryLink))
+    return aggregate, correct
 
 @login_required
 def end(request, chapter_id):
@@ -201,7 +221,7 @@ def end(request, chapter_id):
     try:
         testSession = request.session['test']
         testSession.duration = (datetime.now() - testSession.testDate).seconds
-        aggregate = get_test_session_data(testSession)
+        aggregate = set_test_session_data(chapter, testSession)
         if settings.SEND_EMAIL:
             send_mail(u"Тестирование завершено", testSession.student.username + u' завершил тестирование по теме ' + chapter.shortName,
                       'frostbeast@mail.ru', [User.objects.get(username='teacher').email])
@@ -219,7 +239,7 @@ def test_detail(request, testId):
     try:
         testSession = TestSession.objects.get(id = testId)
         chapter = Chapter.objects.get(id = chapter_id_for_test_session(testSession))
-        aggregate = get_test_session_data(testSession)
+        aggregate = get_test_session_summary(testSession)[0]
         params = get_params(request, {'chapter' : chapter, 'session' : testSession,
                         'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
                         'answers' : aggregate})
@@ -314,7 +334,7 @@ def tests(request):
                     stats[chapter] = forChapter
                 for ft in finalTests:
                     if chapter_id_for_test_session(ft) == chapter.id:
-                        testAggregate = get_test_session_data(ft)
+                        testAggregate = get_test_session_summary(ft)[0]
                         taskResults = []
                         for ta in testAggregate:
                             taskResults.append(len(ta.actual) == 0)
@@ -348,7 +368,7 @@ def tests_to_pdf(request, chapter_id = None):
     p.drawString(40, 820, u"Учащийся")
     finalTests = TestSession.objects.filter(final = True, answer__selected__task__chapter = chapter_id).order_by('student', 'testDate')
     for ft in finalTests:
-        testAggregate = get_test_session_data(ft)
+        testAggregate = get_test_session_summary(ft)[0]
         p.drawString(40, 800 - line * k, ft.student.first_name + " " + ft.student.last_name)
         i = 0
         for ta in testAggregate:
