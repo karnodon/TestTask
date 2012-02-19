@@ -129,7 +129,7 @@ def add_answer(request, task_num):
             except KeyError :
                 testSession = None
             tsStep = TestSequence.objects.filter(test_session = testSession, position = task_num - 2)[0]#current task
-            if request.POST['giveup']:
+            if request.POST.has_key('giveup'):
                 return redirect('/chapter/{0:d}/task/0/'.format(tsStep.task.chapter_id), context_instance=RequestContext(request))
             chosen = request.POST.getlist('option')
             answers = testSession.answer_set.all()
