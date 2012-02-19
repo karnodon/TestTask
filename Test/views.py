@@ -202,8 +202,9 @@ def get_test_session_summary(test_session, chapter = None):
             chapter = task.chapter
     if chapter.easy + chapter.medium + chapter.hard > len(aggregate):
         #get unanswered tasks
-        skipped_tasks = Task.objects.filter(chapter__id=chapter.id).exclude(id__in=answered_task_ids)
-        for task in skipped_tasks:
+        skipped_tasks = TestSequence.objects.filter(test_session = test_session).order_by('position').exclude(task__id__in=answered_task_ids)
+        for ts in skipped_tasks:
+            task = ts.task
             taskOpts = task.option_set.filter(correct=True)
             correctTexts = []
             for opt in taskOpts:
