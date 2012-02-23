@@ -40,7 +40,12 @@ h1 {
 }
 
 h3 {
-    text-align: center;
+    text-align: left;
+    color: #3869FF;
+    font-size: large;
+    margin-left: 12px;
+    margin-bottom: 0;
+    height: 1em;
 }
 
 h1#main {
@@ -50,8 +55,8 @@ h1#main {
 h2 {
     text-align: left;
     color: #3869FF;
-    height: 10px;
-    font-size: large;
+    height: 14px;
+    font-size: x-large;
     margin-left: 12px;
     margin-bottom: 0;
     vertical-align: bottom;
