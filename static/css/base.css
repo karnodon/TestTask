@@ -485,4 +485,10 @@ form.options {
 
 p.docref {
     padding-left: 10px;
+    font-size: large;
+}
+
+ul.docref {
+    font-size: large;
+    margin-top: 0;
 }

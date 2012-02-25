@@ -33,10 +33,8 @@ class Summary:
         self.link = link
 
 def get_params(request, additional= None):
-    params = {}
-    if request.user.is_authenticated():
-        params = {'teacher': (bool(request.user.groups.filter(name='teacher'))),
-                  'chapter_list': Chapter.objects.filter(active=True)}
+    params = {'teacher': (bool(request.user.groups.filter(name='teacher'))),
+              'chapter_list': Chapter.objects.filter(active=True)}
     if additional:
         params.update(additional)
     return params
