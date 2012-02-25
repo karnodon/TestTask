@@ -60,21 +60,23 @@
                     <ul class="topnav">
                         <li><a href="/chapter/">Главная</a></li>
                             <li>
-                                <a href="#">Тестирование</a>
-                                <ul class="subnav">
-                                    {%  block menuinfo %}
-                                        {% if teacher %}
-                                            <li><a href="/statistics/students/">Статистика по студентам</a></li>
-                                            <li><a href="/statistics/tests/">Статистика по тестам</a></li>
-                                        {% else %}
-                                            {% if chapter_list %}
+                                {% if chapter_list %}
+                                    <a href="#">Тестирование</a>
+                                    <ul class="subnav">
+                                        {%  block menuinfo %}
+                                            {% if teacher %}
+                                                <li><a href="/statistics/students/">Статистика по студентам</a></li>
+                                                <li><a href="/statistics/tests/">Статистика по тестам</a></li>
+                                            {% else %}
+
                                                 {% for item in chapter_list %}
                                                     <li><a href="/chapter/{{ item.id }}/"><nobr>{{item}}</nobr></a></li>
                                                 {% endfor %}
+
                                             {% endif %}
-                                        {% endif %}
-                                    {% endblock %}
-                                </ul>
+                                        {% endblock %}
+                                    </ul>
+                                {% endif %}
                             </li>
                         <li>
                             <a href="#">Ученикам</a>
