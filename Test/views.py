@@ -409,6 +409,10 @@ def test_chart(request, chapter_id = None, studentId = None):
 def bio(request):
     return render_to_response("bio.html", get_params(request), context_instance=RequestContext(request))
 
+def method(request):
+    return render_to_response("method.html", get_params(request), context_instance=RequestContext(request))
+
+
 def info(request, cls, for_parents = False):
     return render_to_response("theory/" + ("p" if for_parents else "") + "class" + str(cls) + ".html",
         get_params(request), context_instance=RequestContext(request))
