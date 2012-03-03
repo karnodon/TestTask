@@ -280,6 +280,11 @@ ul.topnav li ul.subnav li {
     z-index: 10;
 }
 
+ul.topnav li.gshis {
+    float: right;
+    text-align: right;
+    padding-right: 0;
+}
 html ul.topnav li ul.subnav li a {
     float: left;
     width: 195px;
