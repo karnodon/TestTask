@@ -283,7 +283,7 @@ def students(request):
         if end:
             ts = ts.filter(testDate__lte = end)
         if ts.count() > 0:
-            stats = list(ts.order_by('student','testDate'))
+            stats = list(ts.order_by('student','-testDate'))
             paginator = Paginator(stats, pagesize)
             if page is None:
                 page = ""
@@ -320,7 +320,7 @@ def tests(request):
                 if end:
                     finalTests = finalTests.filter(testDate__lte = end)
                 if finalTests.count() > 0:
-                    finalTests = finalTests.order_by('student', 'testDate')
+                    finalTests = finalTests.order_by('student', '-testDate')
         else:
             form = SearchTest()
         chapters  = Chapter.objects.filter(active = True)
