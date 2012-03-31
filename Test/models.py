@@ -21,6 +21,8 @@ class Chapter (models.Model):
     hard = models.IntegerField(blank=True)
     def __unicode__(self):
         return self.shortName
+    class Meta:
+        ordering = ['shortName']
 
 class Task (models.Model):
     title = models.CharField(max_length=50)
@@ -32,7 +34,7 @@ class Task (models.Model):
     def __unicode__(self):
         return  self.title
     class Meta:
-        ordering = ['position']
+        ordering = ['chapter', 'position']
 
 class Option (models.Model):
     text = models.CharField(max_length=80)
@@ -43,7 +45,7 @@ class Option (models.Model):
     def __unicode__(self):
         return self.text
     class Meta:
-        ordering = ['position']
+        ordering = ['task', 'position']
 
 class TestSession (models.Model):
     testDate = models.DateField()
