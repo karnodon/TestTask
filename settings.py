@@ -51,14 +51,13 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
-STATIC_ROOT = 'C:/Users/mmorozov.LOGIC-LAB/Documents/Python/TestTask/'
+MEDIA_ROOT = 'C:/Users/Frostbite/Documents/Python/TestTask/media/'
+
+STATIC_ROOT = 'C:/Users/Frostbite/Documents/Python/TestTask/'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
-STATIC_URL = '/static/'
-STATICFILES_DIRS = ('C:/Users/mmorozov.LOGIC-LAB/Documents/Python/TestTask/static/',)
+MEDIA_URL = '/media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -68,6 +67,8 @@ ADMIN_MEDIA_PREFIX = '/static/images/admin/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '(w=#sgu2sjh68(+mzv-gf8es*l7ayh1z4^wv%!9#$f)6yq!e4_'
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = ('C:/Users/Frostbite/Documents/Python/TestTask/static/',)
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -85,7 +86,7 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'TestTask.urls'
 
-TEMPLATE_DIRS = ('C:/Users/mmorozov.LOGIC-LAB/Documents/Python/TestTask/templates',)
+TEMPLATE_DIRS = ('C:/Users/Frostbite/Documents/Python/TestTask/templates',)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -104,4 +105,4 @@ INSTALLED_APPS = (
 
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 
-SEND_EMAIL = False
+SEND_EMAIL = True
