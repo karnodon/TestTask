@@ -64,14 +64,15 @@ def chapters(request, chapter_id=None, final = None):
         testSession.duration = 0
         testSession.student = request.user
         testSession.final = request.session.get('final', False)
-        testSession.save()
-        request.session['test'] = testSession
         #generate random list of tasks
         chapter = Chapter.objects.get(id = chapter_id)
         easy = Task.objects.filter(chapter = chapter_id, complexity = 1).order_by('?')[:chapter.easy]
         medium = Task.objects.filter(chapter = chapter_id, complexity = 2).order_by('?')[:chapter.medium]
         hard = Task.objects.filter(chapter = chapter_id, complexity = 3).order_by('?')[:chapter.hard]
         tasks = list(chain(easy, medium, hard))
+        testSession.total = len(tasks)
+        testSession.save()
+        request.session['test'] = testSession
         random.shuffle(tasks)
         k = 0
         for t in tasks:
@@ -152,6 +153,13 @@ def add_answer(request, task_num):
                     answer.selected.add(tsStep.task.option_set.all()[0])
             answer.position = task_num
             answer.save()
+            c = check_answer(answer, [])
+            if testSession.correct is None:
+                testSession.correct = 0
+            if c[0]:
+                testSession.correct += 1
+            testSession.save()
+            request.session['test'] = testSession
             if TestSequence.objects.filter(test_session = testSession).count() < task_num:
                 task_num = 0
             return redirect('/chapter/{0:d}/task/{1:d}/'.format(tsStep.task.chapter_id, task_num), context_instance=RequestContext(request))
@@ -162,9 +170,36 @@ def add_answer(request, task_num):
 
 def set_test_session_data(chapter, test_session):
     summary, test_session.correct = get_test_session_summary(test_session, chapter)
-    test_session.total = len(summary)
     test_session.save()
     return summary
+
+
+def check_answer(a, answered_task_ids):
+    opts = a.selected.all()
+    correctTexts = []
+    actualTexts = []
+    task = None
+    correct = 0
+    if len(opts) > 0:
+        task = opts[0].task
+        answered_task_ids.append(task.id)
+        taskOpts = task.option_set.filter(correct=True)
+        for opt in taskOpts:
+            if opt.value is None or opt.value == '':
+                correctTexts.append(opt.text)
+            else:
+                correctTexts.append(opt.value)
+        if a.value is not None and opts[0].value != a.value:
+            actualTexts.append(a.value)
+        elif opts.count() == 1 and not opts[0].correct:
+            actualTexts.append(opts[0].text)
+        elif len(correctTexts) > 1 and set(opts).intersection(taskOpts) != set(taskOpts):
+            for o in opts:
+                actualTexts.append(o.text)
+        else:
+            correct = 1
+    return correct, actualTexts, correctTexts, task
+
 
 def get_test_session_summary(test_session, chapter = None):
     answers = test_session.answer_set.all()
@@ -172,28 +207,8 @@ def get_test_session_summary(test_session, chapter = None):
     aggregate = []
     answered_task_ids = []
     for a in answers:
-        opts = a.selected.all()
-        correctTexts = []
-        actualTexts = []
-        task = None
-        if len(opts) > 0:
-            task = opts[0].task
-            answered_task_ids.append(task.id)
-            taskOpts = task.option_set.filter(correct=True)
-            for opt in taskOpts:
-                if opt.value is None or opt.value == '':
-                    correctTexts.append(opt.text)
-                else:
-                    correctTexts.append(opt.value)
-            if a.value is not None and opts[0].value != a.value:
-                actualTexts.append(a.value)
-            elif opts.count() == 1 and not opts[0].correct:
-                actualTexts.append(opts[0].text)
-            elif len(correctTexts) > 1 and set(opts).intersection(taskOpts) != set(taskOpts):
-                for o in opts:
-                    actualTexts.append(o.text)
-            else:
-                correct += 1
+        c, actualTexts, correctTexts, task = check_answer(a, answered_task_ids)
+        correct += c
         if task:
             aggregate.append(Summary(taskText=task.description,
                 correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
