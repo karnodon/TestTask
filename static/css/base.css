@@ -25,17 +25,6 @@ ul.docref {
     margin-top: 0;
 }
 
-.navbar-inverse .navbar-inner {
-    background-color: #555555;
-    background-image: -moz-linear-gradient(top, #222222, #111111);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#222222), to(#333333));
-    background-image: -webkit-linear-gradient(top, #222222, #444444);
-    background-image: -o-linear-gradient(top, #222222, #555555);
-    background-image: linear-gradient(to bottom, #3CAAAA, #194B4B);
-    background-repeat: repeat-x;
-    border-color: #252525;
-    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff222222', endColorstr='#ff111111', GradientType=0);
-}
 
 .navbar-inverse .nav .active > a,
 .navbar-inverse .nav .active > a:hover,
@@ -44,31 +33,25 @@ ul.docref {
     background-color: #194B4B;
 }
 
-.navbar-inverse .nav-collapse .nav > li > a:hover,
-.navbar-inverse .nav-collapse .dropdown-menu a:hover {
-    background-color: #3CAAAA;
-}
-
-.navbar-inverse .nav li.dropdown.open > .dropdown-toggle,
-.navbar-inverse .nav li.dropdown.active > .dropdown-toggle,
-.navbar-inverse .nav li.dropdown.open.active > .dropdown-toggle {
-    color: #ffffff;
-    background-color: #3CAAAA;
-}
 
 .hero-unit {
-    background-image: url("/static/images/header_bg.jpg");
-    background-repeat: no-repeat;
-    background-size: contain;
-    padding: 20px;
+    background: url("/static/images/header_bg.jpg") no-repeat;
+    background-size: cover;
+    padding: 10px;
     text-align: center;
     vertical-align: middle;
 }
 .hero-unit > h1 {
-    margin-top: 0px;
+    margin-top: 0;
+}
+.hero-unit {
+    margin-bottom: 20px;
 }
 #main {
     color: #ffffff;
+}
+#main-container {
+    background: url("/static/images/back_cell.jpg") repeat;
 }
 /*html {
     height: 99%;
