@@ -72,10 +72,10 @@
                             </ul>
                         </li>
                         <li class="pull-right"><a href="http://schoolinfo.educom.ru/">Электронный Журнал</a></li>
+                        <li><form class="navbar-form pull-right">
+                            {% if user.is_authenticated %}<a class="btn btn-success" href="/accounts/logout/">Выход</a>{% else %}<a class="btn btn-success" href="/accounts/login/">Войти</a>{% endif %}
+                        </form></li>
                     </ul>
-                    <form class="navbar-form pull-right">
-                        {% if user.is_authenticated %}<a class="btn" href="/accounts/logout/">Выход</a>{% else %}<a class="btn" href="/accounts/login/">Войти</a>{% endif %}
-                    </form>
                 </div><!--/.nav-collapse -->
             {% endblock %}
         </div>
