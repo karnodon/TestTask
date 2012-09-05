@@ -14,6 +14,9 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+<script type="text/javascript">
+    var selectedPage = '';
+</script>
     <link type="text/css"  href="/static/css/base.css" rel="stylesheet"/>
     <link type="text/css" href="/static/css/cupertino/jquery-ui.css" rel="stylesheet"/>
     {% block links %}{% endblock %}
@@ -26,9 +29,9 @@
             {% block header %}
                 <div class="nav">
                     <ul class="nav">
-                        <li class="active"><a href="/chapter/">Главная</a></li>
+                        <li id="mainpage"><a href="/chapter/">Главная</a></li>
                         {% if chapter_list %}
-                            <li class="dropdown">
+                            <li class="dropdown" id="testpage">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Тестирование <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {%  block menuinfo %}
@@ -44,7 +47,7 @@
                                 </ul>
                             </li>
                         {% endif %}
-                        <li class="dropdown">
+                        <li class="dropdown" id="studentpage">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ученикам <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/inquisitive/">Любознательным</a></li>
@@ -53,15 +56,15 @@
                                 <li><a href="/info/9/">9 класс</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown" id="parentpage">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Родителям <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/info/parents/6/">6 класс</a></li>
                                 <li><a href="/info/parents/9/">9 класс</a></li>
                             </ul>
                         </li>
-                        <li><a href="/method/">Методичка</a></li>
-                        <li class="dropdown">
+                        <li id="methodpage"><a href="/method/">Методичка</a></li>
+                        <li class="dropdown" id="aboutpage">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Обо мне <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/bio/">Биография</a></li>
@@ -126,5 +129,10 @@
 <script src="//mc.yandex.ru/metrika/watch.js" type="text/javascript" defer="defer"></script>
 <noscript><div><img src="//mc.yandex.ru/watch/13027249" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
+<script type="text/javascript" language="JavaScript">
+    $(document).ready(function(){
+        $('#' + selectedPage).addClass('active');
+    });
+</script>
 </body>
 </html>

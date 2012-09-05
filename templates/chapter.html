@@ -44,4 +44,13 @@
             </ul>
         {% endif %}
     {% endif %}
+    <script type="text/javascript" language="JavaScript">
+            $(document).ready(function(){
+                {% if chapterId %}
+                    selectedPage = 'testpage';
+                {% else %}
+                    selectedPage = 'mainpage';
+                {% endif %}
+            });
+        </script>
 {% endblock %}
