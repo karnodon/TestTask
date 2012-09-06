@@ -39,6 +39,13 @@ ul.docref {
 #main-container {
     background: url("/static/images/back_cell.jpg") repeat;
 }
+
+.field_error > input {
+    border: 1px solid #B94A48;
+}
+.field_error > textarea {
+    border: 1px solid #B94A48;
+}
 /*html {
     height: 99%;
 }
@@ -416,3 +423,4 @@ ul.docref {
     font-size: large;
     margin-top: 0;
 }
+*/

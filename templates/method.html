@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 {% block main %}
-    <H2>Методические указания</H2>
-    <div>&nbsp;</div>
-    <p class="docref"><a href="/static/theory/scale.zip">Урок для 6-го класса по теме "Масштаб"</a></p>
-    <p class="docref"><a href="/static/theory/journey.zip">Урок-путешествие для 5-го класса "Страна десятичных дробей"</a></p>
-    <p class="docref"><a href="/static/theory/program.doc">Программа факультатива</a></p>
+    <div class="row">
+        <div class="span1">&nbsp;</div>
+        <div class="span10">
+            <H2>Методические указания</H2>
+            <div>&nbsp;</div>
+            <p class="docref"><a href="/static/theory/scale.zip">Урок для 6-го класса по теме "Масштаб"</a></p>
+            <p class="docref"><a href="/static/theory/journey.zip">Урок-путешествие для 5-го класса "Страна десятичных дробей"</a></p>
+            <p class="docref"><a href="/static/theory/program.doc">Программа факультатива</a></p>
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
     <script type="text/javascript" language="JavaScript">
         $(document).ready(function(){
             selectedPage = 'methodpage';

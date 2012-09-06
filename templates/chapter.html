@@ -30,27 +30,33 @@
             <div class="span1">&nbsp;</div>
         </div>
     {% else%}
-        {%  if user.is_authenticated and chapterId %}
-            <ul>
-                <li><a href="train/">Тренировочный тест</a></li>
-                <li><a href="final/">Зачетный тест</a></li>
-            </ul>
-        {% else %}
-            <p class="docref">Для получения доступа к ознакомительным тестам пожалуйста войдите на сайт, используя:
-            </p>
-            <ul class="docref">
-                <li>Имя пользователя: test</li>
-                <li>Пароль: test</li>
-            </ul>
-        {% endif %}
+        <div class="row">
+            <div class="span1">&nbsp;</div>
+            <div class="span10">
+                {%  if user.is_authenticated and chapterId %}
+                    <ul>
+                        <li><a href="train/">Тренировочный тест</a></li>
+                        <li><a href="final/">Зачетный тест</a></li>
+                    </ul>
+                {% else %}
+                    <p class="docref">Для получения доступа к ознакомительным тестам пожалуйста войдите на сайт, используя:
+                    </p>
+                    <ul class="docref">
+                        <li>Имя пользователя: test</li>
+                        <li>Пароль: test</li>
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="span1">&nbsp;</div>
+        </div>
     {% endif %}
     <script type="text/javascript" language="JavaScript">
-            $(document).ready(function(){
-                {% if chapterId %}
-                    selectedPage = 'testpage';
-                {% else %}
-                    selectedPage = 'mainpage';
-                {% endif %}
-            });
-        </script>
+        $(document).ready(function(){
+            {% if chapterId %}
+                selectedPage = 'testpage';
+            {% else %}
+                selectedPage = 'mainpage';
+            {% endif %}
+        });
+    </script>
 {% endblock %}

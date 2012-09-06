@@ -7,50 +7,59 @@
 {% endblock %}
 {% block title %}{{ task.chapter.shortName }} {% if task.final %}ЗАЧЕТ {% endif %} {% endblock %}
 {% block loader %}timedCount();{% endblock %}
-{% block header %}
-    {{ block.super }}
-    <table cellpadding="0" cellspacing="0" align="center" width="100%">
-        <tr>
-            <td id="tictacdisplay" align="left" width="150" style="font-size: smaller;"></td>
-            <td align="left"><table align="left" cellspacing ="5" cellpadding="0"><tr>
-                {% for item in list %}
-                    <td align="center" class="task button" onclick="document.location.href = '/chapter/{{ item.chapter_id }}/task/{{ forloop.counter }}';"><a class="task" href="/chapter/{{ item.chapter_id }}/task/{{ forloop.counter }}">
-                        {% if task == item %}
-                            <span style="font-size:x-large; font-weight: bold;">{{ forloop.counter}}</span>
-                        {% else %}
-                            {{ forloop.counter }}
-                        {% endif %}
-                    </a></td>
-                    {% if forloop.counter|divisibleby:20  and list|length > 20 %}
-                        </tr><tr>
-                    {% endif %}
-                {% endfor %}
-            </tr></table></td>
-        </tr>
-    </table>
-    <h2>Задание {{ next|add:-1 }}:</h2>
-{% endblock %}
 {% block main %}
-    <p>{{ task.description|safe }}</p>
-    <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/" class="options">
-        {% if task.option_set.all|length > 1 %}<p>Варианты ответов</p>{% else %}<p>Ответ</p>{% endif %}
-        {% for item in task.option_set.all %}
-            {% if type == -1 %}
-                <input type="text" value="" name="option"/>
-            {% else %}
-                {% if type == 1 %}
-                    <input type="radio" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
-                {% else %}
-                    <input type="checkbox" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
-                {% endif %}
-            {% endif %}
-            <br/>
-        {% endfor %}
-        <input type="submit" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}" style="margin-left: 40%" onclick="return validateAnswer()">
-        <input type="submit" value="Сдаюсь" style="margin-left: 85%" name="giveup">
-        <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
-        <input type="hidden" name="limit" id="limit" value="{{ limit }}">
-    </form>
+    <div class="row">
+        <div class="span1">&nbsp;</div>
+        <div class="span10">
+            <table cellpadding="0" cellspacing="0" align="center" width="100%">
+                <tr>
+                    <td id="tictacdisplay" align="left" width="150" style="font-size: smaller;"></td>
+                    <td align="left" width="600">
+                        <div class="btn-toolbar">
+                            <div class="btn-group">
+                                {% for item in list %}
+                                    <a class="btn {% if task == item %}btn-info{% endif %}" href="/chapter/{{ item.chapter_id }}/task/{{ forloop.counter }}">
+                                        {{ forloop.counter }}
+                                    </a>
+                                    {% if forloop.counter|divisibleby:20  and list|length > 20 %}
+                                        </div><div class="btn-group">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <h2>Задание {{ next|add:-1 }}:</h2>
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div class="span1">&nbsp;</div>
+        <div class="span10">
+            <p>{{ task.description|safe }}</p>
+            <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/" class="options">
+                {% if task.option_set.all|length > 1 %}<p>Варианты ответов</p>{% else %}<p>Ответ</p>{% endif %}
+                {% for item in task.option_set.all %}
+                    {% if type == -1 %}
+                        <input type="text" value="" name="option"/>
+                    {% else %}
+                        {% if type == 1 %}
+                            <input type="radio" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
+                        {% else %}
+                            <input type="checkbox" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
+                        {% endif %}
+                    {% endif %}
+                    <br/>
+                {% endfor %}
+                <input type="submit" class="btn btn-success" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}"  onclick="return validateAnswer()">
+                <input type="submit" class="btn btn-danger pull-right" value="Сдаюсь" name="giveup">
+                <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
+                <input type="hidden" name="limit" id="limit" value="{{ limit }}">
+            </form>
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
     <script type="text/javascript">
         $(function() {
             $( "input:submit" ).button();

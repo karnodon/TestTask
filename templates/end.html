@@ -6,32 +6,36 @@
     {% endif %}
 {% endblock %}
 {% block main %}
-    {% if teacher %}
-        <p>Результаты тестирования {{ session.student.first_name }} {{ session.student.last_name }} по разделу "{{ chapter }}"</p>
-    {% else %}
-        <p>Тестирование по разделу {{ chapter }} завершено!</p>
-    {% endif %}
-    <p>
-        {% if teacher %}
-            {{ session.student.first_name }} {{ session.student.last_name }} ответил(а)
-        {% else %}
-            Вы ответили
-        {% endif %} правильно на {{ session.correct }} из {{ session.total }} вопросов за {{ time }}
-    </p>
+    <div class="row">
+        <div class="span1">&nbsp;</div>
+        <div class="span10">
+            {% if teacher %}
+                <div class="alert alert-info">Результаты тестирования {{ session.student.first_name }} {{ session.student.last_name }} по разделу "{{ chapter }}"</div>
+            {% else %}
+                <div class="alert alert-info">Тестирование по разделу {{ chapter }} завершено!</div>
+            {% endif %}
+            <p>
+                {% if teacher %}
+                    {{ session.student.first_name }} {{ session.student.last_name }} ответил(а)
+                {% else %}
+                    Вы ответили
+                {% endif %} правильно на {{ session.correct }} из {{ session.total }} вопросов за {{ time }}
+            </p>
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
     {% if answers %}
-        <table width="100%">
-            {% for answer in answers %}
-                <tr>
-                    <td>
-                        <div class="task first">
-                            {% if answer.actual|length == 0 %}
+        {% for answer in answers %}
+            <div class="row">
+                <div class="span1">&nbsp;</div>
+                <div class="span10">
+                    {% if session.final or teacher or answer.actual|length == 0%}
+                        <div class="alert alert-success {% if answer.actual|length == 0 %}last{% endif %}">
+                            <div>
                                 <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
-                            {% else %}
-                                <img align="middle" height="32" width="32" src="/static/images/error.png">
-                            {% endif %} {{ answer.task|safe }} {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
-                        </div>
-                        {% if session.final or teacher or answer.actual|length == 0%}
-                            <div class="task correct {% if answer.actual|length == 0 %}last{% endif %}">
+                                {{ answer.task|safe }}
+                            </div>
+                            <div>
                                 Правильно
                                 <ul>
                                     {% for item in answer.correct %}
@@ -39,9 +43,16 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-                        {% endif %}
-                        {% if answer.actual|length > 0 %}
-                            <div class="incorrect task last">
+                        </div>
+                    {% endif %}
+                    {% if answer.actual|length > 0 %}
+                        <div class="alert alert-error">
+                            <div>
+                                <img align="middle" height="32" width="32" src="/static/images/error.png">
+                                {{ answer.task|safe }}
+                                {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
+                            </div>
+                            <div>
                                 Неправильно
                                 <ul >
                                     {% for item in answer.actual %}
@@ -49,10 +60,12 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="span1">&nbsp;</div>
+            </div>
+
+        {% endfor %}
     {% endif %}
 {% endblock %}

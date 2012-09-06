@@ -1,38 +1,45 @@
 {% extends "base.html" %}
 {% block main %}
-    <h2>Обратная связь</h2>
-    <div id="feedbackform">
-        {% if human %}
-            Спасибо за ваше сообщение. Ваше мнение очень важно для нас.<br>
-        {% endif %}
-        Введите текст сообщения и нажмите кнопку "Отправить"
-        <form method="POST">
-            {% if form.non_field_errors %}
-                <div>
-                    {% for err in form.non_field_errors %}
-                        <div class="errormessage">{{ err }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            {% for field in form.visible_fields %}
-                {% for err in field.errors %}
-                    <div class="errormessage">{{ err }}</div>
-                {% endfor %}
-            {% endfor %}
-            <ul>
-                {% for field in form.visible_fields %}
-                    {% if field.name != form.pagesize.name %}
-                        <li {% if field.errors %}class="field_error"{% endif %}>
-                            <div style="width: 150px;">{{ field.label_tag }}</div>
-                            {{ field }}
-                        {% if forloop.last %}
-                            <input type="submit" title="Отправить" value="Отправить" id="feedback_button">
-                        {% endif %}
-                        </li>
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="span1">&nbsp;</div>
+        <div class="span10">
+            <h2>Обратная связь</h2>
+            <div id="feedbackform">
+                {% if human %}
+                    <div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">×</button>Спасибо за ваше сообщение. Ваше мнение очень важно для нас.</div>
+                {% endif %}
+                <p class="text-info">Введите текст сообщения и нажмите кнопку "Отправить"</p>
+                <form method="POST" >
+                    {% if form.non_field_errors %}
+                        <div>
+                            {% for err in form.non_field_errors %}
+                                <div class="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{ err }}</div>
+                            {% endfor %}
+                        </div>
                     {% endif %}
-                {% endfor %}
-            </ul>
-        </form>
+                    {% for field in form.visible_fields %}
+                        {% for err in field.errors %}
+                            <div class="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{ err }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                        {% if field.name != form.pagesize.name %}
+                            <div class="control-group">
+                                <label class="control-label" for="{{ field.auto_id }}">{{ field.label_tag }}</label>
+                                <div class="controls{% if field.errors %} field_error{% endif %}">
+                                    {{ field }}
+                                </div>
+                                {% if forloop.last %}
+                                    <input type="submit" title="Отправить" value="Отправить" id="feedback_button" class="btn btn-success">
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </form>
+            </div>
+        </div>
+        <div class="span1">&nbsp;</div>
     </div>
     <script type="text/javascript">
         $(function() {

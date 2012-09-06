@@ -33,6 +33,6 @@ class FeedbackForm(forms.Form):
                              max_length=150,widget=forms.TextInput())
     message = forms.CharField(required=True, label=u'Сообщение',
                               error_messages={"required": u"Введите сообщение"},
-                              widget=forms.Textarea(attrs={'rows': 10, 'cols': 65}))
+                              widget=forms.Textarea(attrs={'rows': 10, 'cols': 85}))
     captcha = CaptchaField(required=True, label=u'Решите пример',
                            error_messages={"required": u"Решите пример правильно", "invalid": u"Неправильный ответ"})
