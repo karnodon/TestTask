@@ -8,8 +8,15 @@
     <script type="text/javascript" src="/static/scripts/jquery.colorbox.js"></script>
 {% endblock %}
 {% block main %}
-    <H2>Статистика по студентам</H2>
-    {% include "searchform.html" %}
+    <div class="row">
+        <div class="span1">&nbsp;</div>
+        <div class="span10">
+            <H2>Статистика по студентам</H2>
+            {% include "searchform.html" %}
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
+
     <table id="rounded-corner">
         <thead>
         <tr>
