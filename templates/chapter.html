@@ -8,7 +8,7 @@
     </style>
 {% endblock %}
 {% block main %}
-    {% if teacher or not chapterId%}
+    {% if teacher or not chapter%}
         <div class="row">
             <div class="span4 offset7">
                 <blockquote>
@@ -31,13 +31,27 @@
         </div>
     {% else%}
         <div class="row">
-            <div class="span1">&nbsp;</div>
-            <div class="span10">
-                {%  if user.is_authenticated and chapterId %}
-                    <ul>
-                        <li><a href="train/">Тренировочный тест</a></li>
-                        <li><a href="final/">Зачетный тест</a></li>
-                    </ul>
+            <div class="span3">
+                <div class="span3">
+                    <div class="well sidebar-nav">
+                        <ul class="nav nav-list">
+                            <li><a href="/info/{{ chapter.grade }}">Дидактический материал</a></li>
+                            <li class="nav-header">Тесты</li>
+                            {% for l_chapter in chapter_list %}
+                                {% if l_chapter.grade == chapter.grade %}
+                                    <li {% if l_chapter.id == chapter.id %}class="active" {% endif %}><a href="/chapter/{{ l_chapter.id }}">{{ l_chapter.shortName }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div><!--/.well -->
+                </div>
+            </div>
+            <div class="span6 offset2">
+                {%  if user.is_authenticated and chapter %}
+                    <div id="fate_choose">
+                        <a href="train/" class="btn btn-large btn-info">Тренировочный тест</a>
+                        <a href="final/" class="btn btn-large btn-danger">Зачетный тест</a>
+                    </div>
                 {% else %}
                     <p class="docref">Для получения доступа к ознакомительным тестам пожалуйста войдите на сайт, используя:
                     </p>

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="row">
+        <div class="span3">
+            <div class="span3">
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
+                        <li class="active"><a href="#">Дидактический материал</a></li>
+                        <li class="nav-header">Тесты</li>
+                        {% for chapter in chapter_list %}
+                            {% if chapter.grade == 7 %}
+                                <li><a href="/chapter/{{ chapter.id }}">{{ chapter.shortName }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div><!--/.well -->
+            </div>
+        </div>
+        <div class="span8">
+            <H2>Информация для учащихся 7-ых классов</H2>
+            <div>&nbsp;</div>
+            <p class="docref"><a href="/static/theory/docs/ref_gia.pdf" target="_blank">Справочная информация по ГИА</a></p>
+            {#    <p class="docref"><a href="/static/theory/docs/ma9_demo_2012.pdf">Демонстрационный вариант#}
+            {#        экзаменационной работы для проведения в 2012 году</a></p>#}
+            <p class="docref"><a href="/static/theory/docs/ma9_kes_2012.pdf" target="_blank">Кодификатор элементов содержания по МАТЕМАТИКЕ</a></p>
+            <p class="docref"><a href="/static/theory/docs/ma9_kt_2012.pdf" target="_blank">Кодификатор требований к уровню подготовки выпускников</a></p>
+            <p class="docref"><a href="/static/theory/docs/ma9_spec_2012.pdf" target="_blank">Спецификация
+                контрольных измерительных материалов для проведения в 2012 году</a></p>
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            selectedPage = 'studentpage';
+        });
+    </script>
+{% endblock %}

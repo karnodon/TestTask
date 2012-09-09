@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="row">
+        <div class="span3">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                    <li class="active"><a href="#">Дидактический материал</a></li>
+                    <li class="nav-header">Тесты</li>
+                    {% for chapter in chapter_list %}
+                        {% if chapter.grade == 5 %}
+                            <li><a href="/chapter/{{ chapter.id }}">{{ chapter.shortName }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div><!--/.well -->
+        </div>
+        <div class="span8">
+            <H2>Информация для учащихся 5-ых классов</H2>
+            <div>&nbsp;</div>
+            <p class="docref"><a href="/theory/chapter1.html">Дроби</a></p>
+            <p class="docref"><a href="/static/theory/input_control_5.doc" target="_blank">Материал для подготовки к городской контрольной работе за курс начальной школы</a></p>
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
+    <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            selectedPage = 'studentpage';
+        });
+    </script>
+{% endblock %}

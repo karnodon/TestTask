@@ -86,7 +86,7 @@ def chapters(request, chapter_id=None, final = None):
     else:
         params = get_params(request)
         if chapter_id:
-            params['chapterId'] = chapter_id
+            params['chapter'] = Chapter.objects.get(id = chapter_id)
         return render_to_response("chapter.html", params, context_instance=RequestContext(request))
 @login_required
 def task(request, task_num):

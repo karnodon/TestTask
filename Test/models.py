@@ -19,6 +19,7 @@ class Chapter (models.Model):
     easy = models.IntegerField(blank=True)
     medium = models.IntegerField(blank=True)
     hard = models.IntegerField(blank=True)
+    grade = models.IntegerField(blank=True)
     def __unicode__(self):
         return self.shortName
     class Meta:

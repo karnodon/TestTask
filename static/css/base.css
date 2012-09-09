@@ -46,6 +46,15 @@ ul.docref {
 .field_error > textarea {
     border: 1px solid #B94A48;
 }
+
+#fate_choose {
+    margin-top: 10%;
+}
+
+#user_label {
+    font-size: 16px;
+    line-height: 24px;
+}
 /*html {
     height: 99%;
 }

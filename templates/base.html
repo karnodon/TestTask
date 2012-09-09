@@ -29,38 +29,28 @@
                     <ul class="nav">
                         <li id="mainpage"><a href="/chapter/">Главная</a></li>
                         {% if chapter_list %}
-                            <li class="dropdown" id="testpage">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Тестирование <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
-                                    {%  block menuinfo %}
-                                        {% if teacher %}
+                            {% if teacher %}
+                                <li class="dropdown" id="testpage">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Статистика <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        {%  block menuinfo %}
                                             <li><a href="/statistics/students/">Статистика по студентам</a></li>
                                             <li><a href="/statistics/tests/">Статистика по тестам</a></li>
-                                        {% else %}
-                                            {% for item in chapter_list %}
-                                                <li><a href="/chapter/{{ item.id }}/"><nobr>{{item}}</nobr></a></li>
-                                            {% endfor %}
-                                        {% endif %}
-                                    {% endblock %}
-                                </ul>
-                            </li>
+                                        {% endblock %}
+                                    </ul>
+                                </li>
+                            {% endif %}
                         {% endif %}
                         <li class="dropdown" id="studentpage">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ученикам <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/inquisitive/">Любознательным</a></li>
                                 <li class="divider"/>
-                                <li><a href="/info/6/">6 класс</a></li>
-                                <li><a href="/info/9/">9 класс</a></li>
+                                <li><a href="/info/5/">5 класс</a></li>
+                                <li><a href="/info/7/">7 класс</a></li>
                             </ul>
                         </li>
-                        <li class="dropdown" id="parentpage">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Родителям <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="/info/parents/6/">6 класс</a></li>
-                                <li><a href="/info/parents/9/">9 класс</a></li>
-                            </ul>
-                        </li>
+                        <li id="parentpage"><a href="/info/parents/5/">Родителям</a></li>
                         <li id="methodpage"><a href="/method/">Методичка</a></li>
                         <li class="dropdown" id="aboutpage">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Обо мне <b class="caret"></b></a>
@@ -89,7 +79,7 @@
             <div class="span8">&nbsp;</div>
             <div class="span3">
 
-                <span class="pull-right label label-info">Пользователь: {{ user.first_name }} {{ user.last_name }}</span>
+                <span class="pull-right label label-info" id="user_label">Пользователь: {{ user.first_name }} {{ user.last_name }}</span>
 
             </div>
             <div class="span1">&nbsp;</div>
