@@ -10,6 +10,8 @@
                         {% if chapter.grade == 5 %}
                             <li><a href="/chapter/{{ chapter.id }}">{{ chapter.shortName }}</a></li>
                         {% endif %}
+                    {% empty %}
+                        <li>Скоро будут</li>
                     {% endfor %}
                 </ul>
             </div><!--/.well -->
