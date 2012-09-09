@@ -32,9 +32,12 @@ class Summary:
         self.actual = actualText
         self.link = link
 
-def get_params(request, additional= None):
+def get_params(request, additional= None, p_grade = None):
+    chapter_list = Chapter.objects.filter(active=True)
+    if p_grade is not None:
+        chapter_list = chapter_list.filter(grade=p_grade)
     params = {'teacher': (bool(request.user.groups.filter(name='teacher'))),
-              'chapter_list': Chapter.objects.filter(active=True)}
+              'chapter_list': chapter_list}
     if additional:
         params.update(additional)
     return params
@@ -429,8 +432,9 @@ def method(request):
 
 
 def info(request, cls, for_parents = False):
+    params = get_params(request, None, int(cls))
     return render_to_response("theory/" + ("p" if for_parents else "") + "class" + str(cls) + ".html",
-        get_params(request), context_instance=RequestContext(request))
+        params, context_instance=RequestContext(request))
 
 def inquisitive(request):
     return render_to_response("inquisitive.html", get_params(request), context_instance=RequestContext(request))

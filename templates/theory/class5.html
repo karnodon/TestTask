@@ -7,9 +7,7 @@
                     <li class="active"><a href="#">Дидактический материал</a></li>
                     <li class="nav-header">Тесты</li>
                     {% for chapter in chapter_list %}
-                        {% if chapter.grade == 5 %}
-                            <li><a href="/chapter/{{ chapter.id }}">{{ chapter.shortName }}</a></li>
-                        {% endif %}
+                        <li><a href="/chapter/{{ chapter.id }}">{{ chapter.shortName }}</a></li>
                     {% empty %}
                         <li>Скоро будут</li>
                     {% endfor %}
