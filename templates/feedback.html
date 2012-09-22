@@ -25,7 +25,7 @@
                     {% for field in form.visible_fields %}
                         {% if field.name != form.pagesize.name %}
                             <div class="control-group">
-                                <label class="control-label" for="{{ field.auto_id }}">{{ field.label_tag }}</label>
+                                {{ field.label_tag }}
                                 <div class="controls{% if field.errors %} field_error{% endif %}">
                                     {{ field }}
                                 </div>
@@ -46,6 +46,7 @@
             $( "input:submit" ).button();
         });
         $(document).ready(function(){
+            $('div.control-group > label').addClass('control-label');
             selectedPage = 'aboutpage';
         });
     </script>

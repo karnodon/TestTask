@@ -30,9 +30,9 @@ class SearchTest(forms.Form):
 class FeedbackForm(forms.Form):
     email = forms.EmailField(required=True, label=u'Электропочта',
                              error_messages={"required": u"Введите адрес", "invalid": u"Неправильный формат адреса"},
-                             max_length=150,widget=forms.TextInput())
+                             max_length=150,widget=forms.TextInput(attrs={'class' : 'field span6'}))
     message = forms.CharField(required=True, label=u'Сообщение',
                               error_messages={"required": u"Введите сообщение"},
-                              widget=forms.Textarea(attrs={'rows': 10, 'cols': 85}))
+                              widget=forms.Textarea(attrs={'rows': 10, 'cols': 85, 'class' : 'field span6'}))
     captcha = CaptchaField(required=True, label=u'Решите пример',
                            error_messages={"required": u"Решите пример правильно", "invalid": u"Неправильный ответ"})

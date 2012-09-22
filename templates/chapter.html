@@ -25,26 +25,29 @@
             <div class="span1">&nbsp;</div>
             <div class="span10">
                 Здравствуйте! Я рада, что вы заглянули на мой сайт. Надеюсь, что вы сможете найти здесь полезную информацию. Современное общество требует от нас учителей идти с ним в ногу,  а это значит активно использовать на уроках информационные технологии. С помощью сайта мне хотелось бы найти единомышленников и поделиться опытом своей работы.
-                <img src="/static/images/main_bg.jpg" alt="">
             </div>
             <div class="span1">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="span8 offset2">
+                <img src="/static/images/main_bg.jpg" alt="">
+            </div>
+            <div class="span2">&nbsp;</div>
         </div>
     {% else%}
         <div class="row">
             <div class="span3">
-                <div class="span3">
-                    <div class="well sidebar-nav">
-                        <ul class="nav nav-list">
-                            <li><a href="/info/{{ chapter.grade }}">Дидактический материал</a></li>
-                            <li class="nav-header">Тесты</li>
-                            {% for l_chapter in chapter_list %}
-                                {% if l_chapter.grade == chapter.grade %}
-                                    <li {% if l_chapter.id == chapter.id %}class="active" {% endif %}><a href="/chapter/{{ l_chapter.id }}">{{ l_chapter.shortName }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div><!--/.well -->
-                </div>
+                <div class="well sidebar-nav">
+                    <ul class="nav nav-list">
+                        <li><a href="/info/{{ chapter.grade }}">Дидактический материал</a></li>
+                        <li class="nav-header">Тесты</li>
+                        {% for l_chapter in chapter_list %}
+                            {% if l_chapter.grade == chapter.grade %}
+                                <li {% if l_chapter.id == chapter.id %}class="active" {% endif %}><a href="/chapter/{{ l_chapter.id }}">{{ l_chapter.shortName }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div><!--/.well -->
             </div>
             <div class="span6 offset2">
                 {%  if user.is_authenticated and chapter %}

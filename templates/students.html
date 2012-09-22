@@ -4,8 +4,11 @@
 {% endblock %}
 {% block links %}
     <link type="text/css" href="/static/css/colorbox.css" rel="stylesheet"/>
-    <script type="text/javascript" src="/static/scripts/jquery.ui.datepicker-ru.js"></script>
+    <link type="text/css" href="/static/css/datepicker.css" rel="stylesheet">
     <script type="text/javascript" src="/static/scripts/jquery.colorbox.js"></script>
+    <script type="text/javascript" src="/static/scripts/jquery.placeholder.js"></script>
+    <script type="text/javascript" src="/static/scripts/bootstrap-datepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/scripts/bootstrap-datepicker.ru.js" charset="UTF-8"></script>
 {% endblock %}
 {% block main %}
     <div class="row">
@@ -17,42 +20,49 @@
         <div class="span1">&nbsp;</div>
     </div>
 
-    <table id="rounded-corner">
-        <thead>
-        <tr>
-            <th class="rounded-left">Учащийся</th>
-            <th>Дата Тестирования</th>
-            <th class="rounded-right">Результат</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for test in stats.object_list %}
-            <tr class="test">
-                <td class="student"><img src="/static/images/student_icon.png" alt="Учащийся"> {{ test.student.first_name}}&nbsp;{{ test.student.last_name }}
-                    {% for chp in chapter_list %}
-                        <br><a class="diagram" href="/statistics/chart/chapter/{{ chp.id }}/student/{{ test.student.id }}/">{{ chp.shortName }}</a>
-                    {% endfor %}
-                </td>
-                <td class="{% if test.final %}finaltest{% endif %}{% if test.total > test.correct %} testIncorrect{% else %} testCorrect{% endif %}">
-                    <a href="/statistics/test/{{ test.id }}/">{{ test.testDate|date:"j.m.Y" }}
-                    </a>
-                </td>
-                <td>
-                    {% if test.total > test.correct  %}
-                        <span class="highlight">Правильных ответов: {{ test.correct }}</span>
-                    {% else %}
-                        <span style="color:green;">Все ответы правильные!</span>
-                    {% endif %}
-                </td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="3">По выбранным параметрам не удалось найти тестов</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="span1">&nbsp;</div>
+        <div class="span10">
+            <table id="rounded-corner" class="table table-hover table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th class="rounded-left">Учащийся</th>
+                    <th>Дата Тестирования</th>
+                    <th class="rounded-right">Результат</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for test in stats.object_list %}
+                    <tr class="test">
+                        <td class="student"><img src="/static/images/student_icon.png" alt="Учащийся"> {{ test.student.first_name}}&nbsp;{{ test.student.last_name }}
+                            {% for chp in chapter_list %}
+                                <br><a class="diagram" href="/statistics/chart/chapter/{{ chp.id }}/student/{{ test.student.id }}/">{{ chp.shortName }}</a>
+                            {% endfor %}
+                        </td>
+                        <td class="{% if test.final %}finaltest{% endif %}{% if test.total > test.correct %}error{% else %}success{% endif %}">
+                            <a href="/statistics/test/{{ test.id }}/">{{ test.testDate|date:"j.m.Y" }}
+                            </a>
+                        </td>
+                        <td class="{% if test.total > test.correct %}error{% else %}success{% endif %}">
+                            {% if test.total > test.correct  %}
+                                <span class="highlight">Правильных ответов: {{ test.correct }}</span>
+                            {% else %}
+                                <span style="color:green;">Все ответы правильные!</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3">По выбранным параметрам не удалось найти тестов</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="span1">&nbsp;</div>
+    </div>
+
     <script type="text/javascript">
         $(".diagram").colorbox({width:"820", height:"420", iframe:true});
-        var txts = new Array();
+        var txts = [];
         $('.student').each(function() {
             if (txts.indexOf($(this).text()) < 0)
                 txts.push($(this).text())

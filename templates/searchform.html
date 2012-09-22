@@ -18,7 +18,7 @@
                     {{ field }}
                 {% endif %}
             {% endfor %}
-            <input type="submit" class="btn btn-success" title="Найти" value="Найти" id="submit">
+            <a class="btn btn-success" id="submit">Найти</a>
             {{ form.page }}
         </div>
         <div class="form-row">
@@ -45,30 +45,39 @@
 </div>
 <script>
     $(function() {
-        $.datepicker.setDefaults( $.datepicker.regional[ "ru" ]);
+        $.fn.datepicker.defaults = {
+            format: 'dd.mm.yyyy', language:'ru'
+        };
+        //$.datepicker.setDefaults( $.datepicker.regional[ "ru" ]);
         $( "#id_start" ).datepicker( );
         $( "#id_end" ).datepicker( );
-        $( "#submit" ).button();
+        $('input').placeholder();
     });
+
     $('#next').click(
             function() {
                 var val = $('#id_page').val();
                 if (val == "")
                     val = 1;
                 $('#id_page').val(parseInt(val) + 1);
-                $('#searchform').find('form').submit();
+                $('#searchform').find('> form').submit();
             }
     );
     $('#prev').click(
             function() {
                 $('#id_page').val(parseInt($('#id_page').val()) - 1);
-                $('#searchform').find('form').submit();
+                $('#searchform').find('> form').submit();
             }
     );
     $('.pagelink').click(
-            function() {
+            function(e) {
                 $('#id_page').val(parseInt($(this).text()));
-                $('#searchform').find('form').submit();
+                $('#searchform').find('> form').submit();
+            }
+    );
+    $('#submit').click(
+            function(e) {
+                $('#searchform').find('> form').submit();
             }
     )
 </script>

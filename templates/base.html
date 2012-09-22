@@ -119,8 +119,15 @@
 <noscript><div><img src="//mc.yandex.ru/watch/13027249" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
 <script type="text/javascript" language="JavaScript">
+    var $buoop = {vs:{i:8,f:12,o:11,s:5,n:9}}
+    $buoop.ol = window.onload;
     $(document).ready(function(){
         $('#' + selectedPage).addClass('active');
+        try {if ($buoop.ol) $buoop.ol();}catch (e) {}
+        var e = document.createElement("script");
+        e.setAttribute("type", "text/javascript");
+        e.setAttribute("src", "http://browser-update.org/update.js");
+        document.body.appendChild(e);
     });
 </script>
 </body>

@@ -55,6 +55,15 @@ ul.docref {
     font-size: 16px;
     line-height: 24px;
 }
+
+.table tbody tr td.success {
+    background-color: #dff0d8;
+}
+.table tbody tr td.error {
+    background-color: #f2dede;
+}
+
+
 /*html {
     height: 99%;
 }
