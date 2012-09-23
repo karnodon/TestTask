@@ -23,8 +23,8 @@
         </div>
         <div class="form-row">
             <div class="pagination">
-                {% if stats.paginator and stats.paginator.num_pages > 1%}
-                    <ul>
+                <ul>
+                    {% if stats.paginator and stats.paginator.num_pages > 1%}
                         {% if stats.has_previous %}
                             <li><a id="prev" href="#"><<</a></li>
                         {% endif %}
@@ -34,11 +34,10 @@
                         {% if stats.has_next %}
                             <li><a id="next" href="#">>></a></li>
                         {% endif %}
-                    </ul>
-
-                {% endif %}
+                    {% endif %}
+                    <li> {{ form.pagesize }}</li>
+                </ul>
             </div>
-            {{ form.pagesize }}
         </div>
     </form>
 
