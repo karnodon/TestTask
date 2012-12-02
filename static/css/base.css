@@ -22,6 +22,9 @@ ul.docref {
     margin-top: 0;
 }
 
+ul.docref > li {
+    padding-bottom: 20px;
+}
 
 
 .hero-unit {
@@ -63,6 +66,23 @@ ul.docref {
     background-color: #f2dede;
 }
 
+
+.tasktext {
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.table-striped thead tr th {
+    background-color: #f9f9f9;
+}
+div.pagination > ul li select {
+    margin-left: 10px;
+    height: 38px;
+}
+
+.no_margin {
+    margin-left: 0 !important;
+}
 
 /*html {
     height: 99%;

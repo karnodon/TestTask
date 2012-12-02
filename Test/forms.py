@@ -28,6 +28,15 @@ class SearchTest(forms.Form):
         # Always return the full collection of cleaned data.
         return cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        super(SearchTest, self).__init__(*args, **kwargs)
+        self.right_wing = 0#make in useless unless deliberately set
+        self.left_wing = 10000
+        self.middle = 0
+
+    def update_pagesize_class(self, cls):
+        self.fields['pagesize'].widget.attrs['class'] = 'input-mini ' + cls
+
 class FeedbackForm(forms.Form):
     email = forms.EmailField(required=True, label=u'Электропочта',
                              error_messages={"required": u"Введите адрес", "invalid": u"Неправильный формат адреса"},

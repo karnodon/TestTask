@@ -53,7 +53,9 @@
                 {%  if user.is_authenticated and chapter %}
                     <div id="fate_choose">
                         <a href="train/" class="btn btn-large btn-info">Тренировочный тест</a>
-                        <a href="final/" class="btn btn-large btn-danger">Зачетный тест</a>
+                        {% if user.username != 'test'%}
+                            <a href="final/" class="btn btn-large btn-danger">Зачетный тест</a>
+                        {% endif %}
                     </div>
                 {% else %}
                     <p class="docref">Для получения доступа к ознакомительным тестам пожалуйста войдите на сайт, используя:

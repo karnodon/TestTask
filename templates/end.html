@@ -6,13 +6,14 @@
     {% endif %}
 {% endblock %}
 {% block main %}
+    <div class="row">&nbsp;</div>
     <div class="row">
         <div class="span1">&nbsp;</div>
         <div class="span10">
             {% if teacher %}
                 <div class="alert alert-info">Результаты тестирования {{ session.student.first_name }} {{ session.student.last_name }} по разделу "{{ chapter }}"</div>
             {% else %}
-                <div class="alert alert-info">Тестирование по разделу {{ chapter }} завершено!</div>
+                <div class="alert alert-info">Тестирование по разделу "{{ chapter }}" завершено!</div>
             {% endif %}
             <p>
                 {% if teacher %}
@@ -29,39 +30,43 @@
             <div class="row">
                 <div class="span1">&nbsp;</div>
                 <div class="span10">
-                    {% if session.final or teacher or answer.actual|length == 0%}
-                        <div class="alert alert-success {% if answer.actual|length == 0 %}last{% endif %}">
-                            <div>
-                                <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
-                                {{ answer.task|safe }}
+                    <div class="table-bordered">
+                        {% if session.final or teacher or answer.actual|length == 0%}
+                            <div class="alert alert-success {% if answer.actual|length == 0 %}last{% endif %}">
+                                <div>
+                                    <img align="middle" height="32" width="32" src="/static/images/checkmark.png">
+                                    {{ answer.task|safe }}
+                                </div>
+                                <div>
+                                    Правильно
+                                    <ul>
+                                        {% for item in answer.correct %}
+                                            <li>{{ item|safe }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
-                            <div>
-                                Правильно
-                                <ul>
-                                    {% for item in answer.correct %}
-                                        <li>{{ item|safe }}</li>
-                                    {% endfor %}
-                                </ul>
+                        {% endif %}
+                        {% if answer.actual|length > 0 %}
+                            <div class="alert alert-error">
+                                {% if not session.final and not teacher %}
+                                    <div>
+                                        <img align="middle" height="32" width="32" src="/static/images/error.png">
+                                        {{ answer.task|safe }}
+                                        {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    Неправильно
+                                    <ul >
+                                        {% for item in answer.actual %}
+                                            <li>{{ item|safe }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
-                    {% if answer.actual|length > 0 %}
-                        <div class="alert alert-error">
-                            <div>
-                                <img align="middle" height="32" width="32" src="/static/images/error.png">
-                                {{ answer.task|safe }}
-                                {% if answer.actual|length > 0  and answer.link %} <a href="{{ answer.link }}">Теория</a>{% endif %}
-                            </div>
-                            <div>
-                                Неправильно
-                                <ul >
-                                    {% for item in answer.actual %}
-                                        <li>{{ item|safe }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="span1">&nbsp;</div>
             </div>

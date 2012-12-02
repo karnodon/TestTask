@@ -4,13 +4,17 @@
             {% if form.non_field_errors %}
                 <div>
                     {% for err in form.non_field_errors %}
-                        <div class="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{ err }}</div>
+                        <div class="alert">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ err }}</div>
                     {% endfor %}
                 </div>
             {% endif %}
             {% for field in form.visible_fields %}
                 {% for err in field.errors %}
-                    <div class="alert"><button type="button" class="close" data-dismiss="alert">×</button>{{ err }}</div>
+                    <div class="alert">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        {{ err }}</div>
                 {% endfor %}
             {% endfor %}
             {% for field in form.visible_fields %}
@@ -24,12 +28,17 @@
         <div class="form-row">
             <div class="pagination">
                 <ul>
-                    {% if stats.paginator and stats.paginator.num_pages > 1%}
+                    {% if stats.paginator and stats.paginator.num_pages > 1 %}
                         {% if stats.has_previous %}
                             <li><a id="prev" href="#"><<</a></li>
                         {% endif %}
-                        {% for pn in stats.paginator.page_range %}
-                            <li class="{% if pn == stats.number%}active{% endif %}"><a href="#" class="pagelink">{{ pn }}</a></li>
+                        {% for pn in stats.paginator.visible_page_range %}
+                            {% if pn > 0 %}
+                                <li class="{% if pn == stats.number %}active{% endif %}"><a href="#" class="pagelink">{{ pn }}</a>
+                                </li>
+                            {% else %}
+                                <li><a href="#">...</a></li>
+                            {% endif %}
                         {% endfor %}
                         {% if stats.has_next %}
                             <li><a id="next" href="#">>></a></li>
@@ -43,18 +52,18 @@
 
 </div>
 <script>
-    $(function() {
+    $(function () {
         $.fn.datepicker.defaults = {
-            format: 'dd.mm.yyyy', language:'ru'
+            format:'dd.mm.yyyy', language:'ru'
         };
         //$.datepicker.setDefaults( $.datepicker.regional[ "ru" ]);
-        $( "#id_start" ).datepicker( );
-        $( "#id_end" ).datepicker( );
+        $("#id_start").datepicker();
+        $("#id_end").datepicker();
         $('input').placeholder();
     });
 
     $('#next').click(
-            function() {
+            function () {
                 var val = $('#id_page').val();
                 if (val == "")
                     val = 1;
@@ -63,19 +72,19 @@
             }
     );
     $('#prev').click(
-            function() {
+            function () {
                 $('#id_page').val(parseInt($('#id_page').val()) - 1);
                 $('#searchform').find('> form').submit();
             }
     );
     $('.pagelink').click(
-            function(e) {
+            function (e) {
                 $('#id_page').val(parseInt($(this).text()));
                 $('#searchform').find('> form').submit();
             }
     );
     $('#submit').click(
-            function(e) {
+            function (e) {
                 $('#searchform').find('> form').submit();
             }
     )

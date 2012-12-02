@@ -3,7 +3,10 @@
     » Статистика по тестам
 {% endblock %}
 {% block links %}
-    <script type="text/javascript" src="/static/scripts/jquery.ui.datepicker-ru.js"></script>
+    <link type="text/css" href="/static/css/datepicker.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/scripts/jquery.placeholder.js"></script>
+    <script type="text/javascript" src="/static/scripts/bootstrap-datepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="/static/scripts/bootstrap-datepicker.ru.js" charset="UTF-8"></script>
 {% endblock %}
 {% block main %}
     <div class="row">
@@ -25,10 +28,10 @@
         <div class="span10">
             <table id ="rounded-corner" cellspacing="1" cellpadding="1" style="width: 760px;" class="table table-hover table-striped table-bordered table">
                 <thead>
-                <tr><th width="20%" class="rounded-left">Учащийся</th><th width="10%" class="task">Дата</th><th colspan="{{ stats.values.0.0.1|length }}" class="task">Задания</th><th rowspan="2" class="rounded-right task">Балл</th></tr>
+                <tr><th width="20%" class="rounded-left">Учащийся</th><th width="10%" class="task">Дата</th><th colspan="{{ task_count|length }}" class="task">Задания</th><th rowspan="2" class="rounded-right task">Балл</th></tr>
                 <tr><th colspan="2">Тема</th>
-                    {% if stats.values.0.0.1|length %}
-                        {% for item in stats.values.0.0.1 %}
+                    {% if task_count|length > 0 %}
+                        {% for i in task_count %}
                             <th align="center">{{ forloop.counter }}</th>
                         {% endfor %}
                     {% else %}

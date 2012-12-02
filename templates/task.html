@@ -37,25 +37,29 @@
     <div class="row">
         <div class="span1">&nbsp;</div>
         <div class="span10">
-            <p>{{ task.description|safe }}</p>
+            <p class="tasktext">{{ task.description|safe }}</p>
             <form method="POST" action="/chapter/{{ task.chapter_id }}/task/{{ next }}/answer/" class="options">
-                {% if task.option_set.all|length > 1 %}<p>Варианты ответов</p>{% else %}<p>Ответ</p>{% endif %}
+                {% if task.option_set.all|length > 1 %}<p class="tasktext">Варианты ответов</p>{% else %}<p>Ответ</p>{% endif %}
                 {% for item in task.option_set.all %}
-                    {% if type == -1 %}
-                        <input type="text" value="" name="option"/>
-                    {% else %}
-                        {% if type == 1 %}
-                            <input type="radio" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
+                    <div>
+                        {% if type == -1 %}
+                            <input type="text" value="" name="option"/>
                         {% else %}
-                            <input type="checkbox" value="{{item.id}}" name="option" title="{{item}}"/>{{item|safe}}
+                            {% if type == 1 %}
+                                <input class="tasktext pull-left" type="radio" value="{{item.id}}" name="option" title="{{item}}"/><span class="tasktext">{{item|safe}}</span>
+                            {% else %}
+                                <input class="tasktext pull-left" type="checkbox" value="{{item.id}}" name="option" title="{{item}}"/><span class="tasktext">{{item|safe}}</span>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                    <br/>
+                    </div>
                 {% endfor %}
-                <input type="submit" class="btn btn-success" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}"  onclick="return validateAnswer()">
-                <input type="submit" class="btn btn-danger pull-right" value="Сдаюсь" name="giveup">
-                <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
-                <input type="hidden" name="limit" id="limit" value="{{ limit }}">
+                <div class="clear">&nbsp;</div>
+                <div>
+                    <input type="submit" class="btn btn-success" value="{% if next > list|length %}Закончить{% else %}Следующий{% endif %}"  onclick="return validateAnswer()">
+                    <input type="submit" class="btn btn-danger pull-right" value="Сдаюсь" name="giveup">
+                    <input type="hidden" name="tictac" id="tictac" value="{{ tictac }}">
+                    <input type="hidden" name="limit" id="limit" value="{{ limit }}">
+                </div>
             </form>
         </div>
         <div class="span1">&nbsp;</div>

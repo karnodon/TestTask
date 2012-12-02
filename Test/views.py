@@ -18,9 +18,9 @@ import reportlab
 from reportlab.pdfbase.pdfmetrics import registerFont
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
-from Test.forms import SearchTest, FeedbackForm
+from forms import SearchTest, FeedbackForm
 
-from Test.models import Chapter, Task, Option, TestSession, TestSequence, Feedback
+from models import Chapter, Task, Option, TestSession, TestSequence, Feedback
 import settings
 #l = logging.getLogger('django.db.backends')
 #l.setLevel(logging.DEBUG)
@@ -31,6 +31,28 @@ class Summary:
         self.correct = correctText
         self.actual = actualText
         self.link = link
+
+class Paginator_2(Paginator):
+    def __init__(self, object_list, per_page, current_page, wing=2):
+        super(Paginator_2, self).__init__(object_list, per_page)
+        self.number = current_page
+        self.wing = wing
+    def _get_visible_page_range(self):
+        if self.number == 0:
+            return self.page_range
+        end = self.num_pages + 1
+        rng = [1]
+        left = max(self.number - self.wing, 2)
+        right = min(self.number + self.wing + 1, end)
+        if left - 2 >= 1:
+            rng.append(-1)
+        rng.extend(range(left, right))
+        if end - right >= 1:
+            rng.append(-1)
+        rng.append(end)
+        return rng
+
+    visible_page_range = property(_get_visible_page_range)
 
 def get_params(request, additional= None, p_grade = None):
     chapter_list = Chapter.objects.filter(active=True)
@@ -60,7 +82,14 @@ def chapters(request, chapter_id=None, final = None):
                 return test_detail(request,
                     TestSession.objects.filter(student=request.user, final=True,
                         answer__selected__task__chapter=chapter_id).distinct()[0].id)
+            except IndexError:
+                pass
             except TestSession.DoesNotExist:
+                pass
+        else:
+            try:
+                del request.session['final']
+            except KeyError:
                 pass
         testSession = TestSession()
         testSession.testDate = datetime.now()
@@ -98,6 +127,8 @@ def task(request, task_num):
     if isTeacher:
         return redirect("/chapter/")
     testSession = request.session.get('test')
+    if testSession is None:
+        return redirect("/chapter/")
     testSession.duration = (datetime.now() - testSession.testDate).seconds
     testSession.save()
     test_sequence = TestSequence.objects.filter(test_session = testSession).order_by('position')
@@ -192,7 +223,7 @@ def check_answer(a, answered_task_ids):
                 correctTexts.append(opt.text)
             else:
                 correctTexts.append(opt.value)
-        if a.value is not None and opts[0].value != a.value:
+        if a.value is not None and opts[0].value.replace(" ", "") != a.value.replace(" ", ""):
             actualTexts.append(a.value)
         elif opts.count() == 1 and not opts[0].correct:
             actualTexts.append(opts[0].text)
@@ -216,7 +247,8 @@ def get_test_session_summary(test_session, chapter = None):
             aggregate.append(Summary(taskText=task.description,
                 correctText=correctTexts, actualText=actualTexts, link = task.theoryLink))
             chapter = task.chapter
-    if chapter.easy + chapter.medium + chapter.hard > len(aggregate):
+    if (chapter.easy if chapter.easy else 0) + (chapter.medium  if chapter.medium else 0)+ \
+       (chapter.hard if chapter.hard else 0) > len(aggregate):
         #get unanswered tasks
         skipped_tasks = TestSequence.objects.filter(test_session = test_session).order_by('position').exclude(task__id__in=answered_task_ids)
         for ts in skipped_tasks:
@@ -240,9 +272,15 @@ def end(request, chapter_id):
         testSession.duration = (datetime.now() - testSession.testDate).seconds
         aggregate = set_test_session_data(chapter, testSession)
         if settings.SEND_EMAIL:
-            send_mail(u"Тестирование завершено", testSession.student.username + u' завершил тестирование по теме ' + chapter.shortName,
-                      'frostbeast@mail.ru', [User.objects.get(username='teacher').email])
-        del request.session['test']
+            teacher = User.objects.get(username='teacher')
+            if teacher:
+                send_mail(u"Тестирование завершено", testSession.student.username + u' завершил тестирование по теме ' + chapter.shortName,
+                    'frostbeast@mail.ru', [teacher.email])
+        try:
+            del request.session['test']
+            del request.session['final']
+        except KeyError:
+            pass
         params = get_params(request, {'chapter' : chapter, 'session' : testSession,
                                       'time' :  time.strftime('%H:%M:%S', time.gmtime(testSession.duration)),
                                       'answers' : aggregate})
@@ -302,9 +340,9 @@ def students(request):
             ts = ts.filter(testDate__lte = end)
         if ts.count() > 0:
             stats = list(ts.order_by('student','-testDate'))
-            paginator = Paginator(stats, pagesize)
             if page is None:
-                page = ""
+                page = 1
+            paginator = Paginator_2(stats, pagesize, page, 2)
             try:
                 stats = paginator.page(page)
             except PageNotAnInteger:
@@ -341,7 +379,9 @@ def tests(request):
                     finalTests = finalTests.order_by('student', '-testDate')
         else:
             form = SearchTest()
+        form.update_pagesize_class('no_margin')
         chapters  = Chapter.objects.filter(active = True)
+        task_cnt = 0
         if finalTests.count() > 0:
             for chapter in chapters:
                 try:
@@ -352,11 +392,13 @@ def tests(request):
                 for ft in finalTests:
                     if chapter_id_for_test_session(ft) == chapter.id:
                         testAggregate = get_test_session_summary(ft)[0]
-                        taskResults = []
+                        task_results = []
                         for ta in testAggregate:
-                            taskResults.append(len(ta.actual) == 0)
-                        forChapter.append([ft, taskResults])
-        params = get_params(request, {'stats' : stats, 'form' : form})
+                            task_results.append(len(ta.actual) == 0)
+                        forChapter.append([ft, task_results])
+                        if task_cnt == 0:
+                            task_cnt = len(task_results)
+        params = get_params(request, {'stats' : stats, 'form' : form, "task_count": range(0,task_cnt)})
         return render_to_response("tests.html", params, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
