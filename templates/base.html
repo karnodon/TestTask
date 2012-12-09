@@ -101,6 +101,13 @@
                     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
                 })();
             </script><br/><span class="copyright">© 2011, Морозова Ирина, Морозов Максим, frostbite3-at-gmail.com</span>
+            {% if work_time != None %}
+                <div>
+                {% for tm in work_time %}
+                    time = {{ tm }};&nbsp;
+                {% endfor %}
+                </div>
+            {% endif %}
         </footer>
     {% endblock %}
 </div>

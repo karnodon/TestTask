@@ -40,7 +40,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for chap, st in stats.items %}
+                {% for chap, st in tests.items %}
                     {% for stat in st %}
                         {% if forloop.first %}
                             <tr><th colspan="{{ stat.1|length|add:"3" }}" align="left">{{ chap }}</th></tr>

@@ -39,7 +39,7 @@
                                 <br><a class="diagram" href="/statistics/chart/chapter/{{ chp.id }}/student/{{ test.student.id }}/">{{ chp.shortName }}</a>
                             {% endfor %}
                         </td>
-                        <td class="{% if test.final %}finaltest{% endif %}{% if test.total > test.correct %}error{% else %}success{% endif %}">
+                        <td class="{% if test.final %}finaltest {% endif %}{% if test.total > test.correct %}error{% else %}success{% endif %}">
                             <a href="/statistics/test/{{ test.id }}/">{{ test.testDate|date:"j.m.Y" }}
                             </a>
                         </td>

@@ -305,6 +305,7 @@ def test_detail(request, testId):
 @login_required
 def students(request):
     try:
+        t1 = datetime.now()
         studentGroup = Group.objects.get(name='student')
         students = studentGroup.user_set.all()
         stats = []
@@ -351,7 +352,8 @@ def students(request):
             except EmptyPage:
                  # If page is out of range (e.g. 9999), deliver last page of results.
                 stats = paginator.page(paginator.num_pages)
-        params = get_params(request, {'stats' : stats, 'form' : form})
+        t2 = datetime.now()
+        params = get_params(request, {'stats' : stats, 'form' : form, "work_time" : [t2 - t1]})
         return render_to_response("students.html", params, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
@@ -359,7 +361,10 @@ def students(request):
 @login_required
 def tests(request):
     try:
+        now = datetime.now()
         stats = {}
+        page = 1
+        paginator = None
         finalTests = TestSession.objects.filter(final = True).exclude(total = None)
         if request.method == 'GET':
             form = SearchTest(request.GET)
@@ -377,12 +382,29 @@ def tests(request):
                     finalTests = finalTests.filter(testDate__lte = end)
                 if finalTests.count() > 0:
                     finalTests = finalTests.order_by('student', '-testDate')
+                page = form.cleaned_data['page']
+                try:
+                    pagesize = int(form.cleaned_data['pagesize'])
+                except ValueError:
+                    if form.cleaned_data['pagesize'] ==u'':
+                        pagesize = 10
+                    else:
+                        pagesize = 100000
+                        page = 1
+                if page is None or not isinstance(page, int):
+                    page = 1
+                paginator = Paginator_2(range(0, finalTests.count()), pagesize, page, 2)
+                finalTests = finalTests[(page - 1) * pagesize : page * pagesize]
+
         else:
             form = SearchTest()
         form.update_pagesize_class('no_margin')
         chapters  = Chapter.objects.filter(active = True)
         task_cnt = 0
+        t1 = datetime.now()
         if finalTests.count() > 0:
+            if paginator is None:
+                paginator = Paginator_2(range(0, finalTests.count()), finalTests.count(), 1, 2)
             for chapter in chapters:
                 try:
                     forChapter = stats[chapter]
@@ -398,7 +420,8 @@ def tests(request):
                         forChapter.append([ft, task_results])
                         if task_cnt == 0:
                             task_cnt = len(task_results)
-        params = get_params(request, {'stats' : stats, 'form' : form, "task_count": range(0,task_cnt)})
+        t2 = datetime.now()
+        params = get_params(request, {'tests' : stats, 'stats': paginator.page(page), 'form' : form, "task_count": range(0,task_cnt), "work_time" : [t1 - now,  t2 - t1]})
         return render_to_response("tests.html", params, context_instance=RequestContext(request))
     except ValueError:
         return redirect("/chapter/")
